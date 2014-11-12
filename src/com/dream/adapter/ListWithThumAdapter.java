@@ -12,16 +12,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dream.R;
-import com.dream.util.Bean;
+import com.dream.db.model.Article;
 
 public class ListWithThumAdapter extends BaseAdapter {
 
 	private Activity activity;
-	private List<Bean> data;
+	private List<Article> data;
 	private static LayoutInflater inflater = null;
 	//public ImageLoader imageLoader;
 
-	public ListWithThumAdapter(Activity a, List<Bean> datalist) {
+	public ListWithThumAdapter(Activity a, List<Article> datalist) {
 		activity = a;
 		data = datalist;
 		inflater = (LayoutInflater) activity
@@ -46,18 +46,17 @@ public class ListWithThumAdapter extends BaseAdapter {
 		if (convertView == null)
 			vi = inflater.inflate(R.layout.list_thum_item, null);
 
-		Bean song = null;
+		Article article = null;
 
 		ImageView image = (ImageView) vi.findViewById(R.id.imgthumb);
 		TextView tvartist = (TextView) vi.findViewById(R.id.tvartist);
 		TextView tvtitle = (TextView) vi.findViewById(R.id.tvtitle);
 		try {
-			song = data.get(position);
+			article = data.get(position);
 			//imageLoader.DisplayImage(song.getString("thumb_url"), image);
-			tvartist.setText(song.getStr("artist"));
-			tvtitle.setText(song.getStr("title"));
+			tvartist.setText(article.getTITLE());
+			tvtitle.setText(article.getDATETIME());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
