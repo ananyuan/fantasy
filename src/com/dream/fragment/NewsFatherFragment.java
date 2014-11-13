@@ -1,12 +1,17 @@
 package com.dream.fragment;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.codehaus.jackson.map.ObjectMapper;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +22,8 @@ import com.dream.adapter.ListWithThumAdapter;
 import com.dream.db.OrmSqliteDao;
 import com.dream.db.dao.ArticleDao;
 import com.dream.db.model.Article;
+import com.dream.util.CommUtils;
+import com.dream.util.PrefUtils;
 import com.dream.view.TitleBarView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -156,17 +163,33 @@ public class NewsFatherFragment extends Fragment {
 		protected Integer doInBackground(Integer... params) {
 			int result = -1;
 			
-			OrmSqliteDao<Article> msgDao = new ArticleDao(mContext);  
+			OrmSqliteDao<Article> msgDao = new ArticleDao(mContext); 
+			
+			String lastTime = PrefUtils.getStr(mContext, CommUtils.LAST_KEY_ARTICLE, "");
+			Log.d(TAG, lastTime);
 			//TODO query from server
-			for (int i=0;i<3;i++) {
-				Article article = new Article();
-				article.setID(String.valueOf(i));
-				article.setTITLE("这个是一条序号是" + i);
-				article.setDATETIME("2014-11-12");
+			if (lastTime.length() == 0) {
+				lastTime = "2014-01-01";
+			}
+			
+			String requestUrl = CommUtils.getRequestUri(mContext) + "/" + "article/list/" + lastTime;
+			
+			List<LinkedHashMap<String, Object>> list = CommUtils.getList(requestUrl);
+			
+			for (int i = 0; i < list.size(); i++) {
+				Map<String, Object> map = list.get(i);
 				
+				ObjectMapper mapper = new ObjectMapper();
+				Article article = mapper.convertValue(map, Article.class);
+
 				newList.add(article);
 				
 				msgDao.saveOrUpdate(article);
+				
+				//按时间倒序取的数据，
+				if (i==0) {
+					PrefUtils.saveStr(mContext, CommUtils.LAST_KEY_ARTICLE, article.getAtime());
+				}
 			}
 			
 			if (newList.size() > 0) {

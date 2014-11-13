@@ -9,5 +9,6 @@
 	<string name="cnews">消息</string>
     <string name="call">通话</string>
     <string name="dynamic">动态</string>
+    <string name="setting">设置</string>
     
 </resources>

@@ -11,101 +11,103 @@ public class Article {
 	
 	
     @DatabaseField(id = true)
-    private String ID;
+    private String id;
     
     
     @DatabaseField
-    private String TITLE;
+    private String title;
+    
+	@DatabaseField
+    private String content;
     
     
     @DatabaseField
-    private String DATETIME;
+    private String chanId;
     
     
     @DatabaseField
-    private String CONTENT;
-    
-    
-    @DatabaseField
-    private String CHANNEL;
+    private String atime;
     
     
     
     @DatabaseField
-    private String IMGID;  //逗号分隔
+    private String summary;
 
 
-
-	public String getID() {
-		return ID;
-	}
-
-
-
-	public void setID(String iD) {
-		ID = iD;
-	}
-
-
-
-	public String getTITLE() {
-		return TITLE;
-	}
-
-
-
-	public void setTITLE(String tITLE) {
-		TITLE = tITLE;
-	}
-
-
-
-	public String getDATETIME() {
-		return DATETIME;
-	}
-
-
-
-	public void setDATETIME(String dATETIME) {
-		DATETIME = dATETIME;
-	}
-
-
-
-	public String getCONTENT() {
-		return CONTENT;
-	}
-
-
-
-	public void setCONTENT(String cONTENT) {
-		CONTENT = cONTENT;
-	}
-
-
-
-	public String getCHANNEL() {
-		return CHANNEL;
-	}
-
-
-
-	public void setCHANNEL(String cHANNEL) {
-		CHANNEL = cHANNEL;
-	}
-
-
-
-	public String getIMGID() {
-		return IMGID;
-	}
-
-
-
-	public void setIMGID(String iMGID) {
-		IMGID = iMGID;
-	}
+    @DatabaseField
+    private String localurl;
     
     
     
+    public String getId() {
+		return id;
+	}
+
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+
+	public String getTitle() {
+		return title;
+	}
+
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+
+	public String getContent() {
+		return content;
+	}
+
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+
+	public String getChanId() {
+		return chanId;
+	}
+
+
+	public void setChanId(String chanId) {
+		this.chanId = chanId;
+	}
+
+
+	public String getAtime() {
+		return atime;
+	}
+
+
+	public void setAtime(String atime) {
+		this.atime = atime;
+	}
+
+
+	public String getSummary() {
+		return summary;
+	}
+
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+
+	public String getLocalurl() {
+		return localurl;
+	}
+
+
+	public void setLocalurl(String localurl) {
+		this.localurl = localurl;
+	}
+
+
+
 }

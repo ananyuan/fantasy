@@ -54,8 +54,8 @@ public class ListWithThumAdapter extends BaseAdapter {
 		try {
 			article = data.get(position);
 			//imageLoader.DisplayImage(song.getString("thumb_url"), image);
-			tvartist.setText(article.getTITLE());
-			tvtitle.setText(article.getDATETIME());
+			tvartist.setText(article.getAtime());
+			tvtitle.setText(article.getTitle());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
