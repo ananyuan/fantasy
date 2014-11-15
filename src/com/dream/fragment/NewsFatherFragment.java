@@ -8,6 +8,7 @@ import java.util.Map;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,8 +16,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
+import com.dream.DetailsActivity;
 import com.dream.R;
 import com.dream.adapter.ListWithThumAdapter;
 import com.dream.db.OrmSqliteDao;
@@ -93,6 +98,21 @@ public class NewsFatherFragment extends Fragment {
 			@Override
 			public void onLastItemVisible() {
 				//Toast.makeText(PullToRefreshListActivity.this, "End of List!", Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		
+		mPullRefreshListView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				Intent intent = new Intent(mContext, DetailsActivity.class);
+				
+				intent.putExtra("article", listAdapter.getItem(position - 1));
+				
+				startActivity(intent);
+				Toast.makeText(mContext, "Go Detail activity!", Toast.LENGTH_SHORT).show();
 			}
 		});
 		

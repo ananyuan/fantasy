@@ -33,8 +33,11 @@ public class ListWithThumAdapter extends BaseAdapter {
 		return data == null ? 0 : data.size();
 	}
 
-	public Object getItem(int position) {
-		return position;
+	public Article getItem(int position) {
+		if (data != null && data.size() != 0) {
+			return data.get(position);
+		}
+		return null;
 	}
 
 	public long getItemId(int position) {

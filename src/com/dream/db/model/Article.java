@@ -1,10 +1,17 @@
 package com.dream.db.model;
 
+import java.io.Serializable;
+
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
 
 @DatabaseTable(tableName = "ARTICLE")
-public class Article {
+public class Article implements Serializable {
+
+
+	private static final long serialVersionUID = -2744215917402309530L;
+
+
 
 	public Article() {
     }

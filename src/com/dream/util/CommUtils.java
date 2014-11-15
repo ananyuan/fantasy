@@ -29,7 +29,7 @@ public class CommUtils {
 	public static final String HOST_KEY = "host_address";
 	
 	/** perf 中保存的服务器的地址 value */
-	public static final String HOST_KEY_VALUE = "172.16.0.114:8083";
+	public static final String HOST_KEY_VALUE = "10.198.1.48:8083";
 	
 	
 	public static String getRequestUri(Context context) {
@@ -38,12 +38,7 @@ public class CommUtils {
 		return uri;
 	}
 	
-	/**
-	 * 
-	 * @param url 要获取数据的url
-	 * @return List的数据
-	 */
-	public static List<LinkedHashMap<String, Object>> getList(String url) {
+	public static String request(String url) {
 		InputStream inputStream = null;
         String result = "";
         try {
@@ -58,6 +53,17 @@ public class CommUtils {
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }
+        
+        return result;
+	}
+	
+	/**
+	 * 
+	 * @param url 要获取数据的url
+	 * @return List的数据
+	 */
+	public static List<LinkedHashMap<String, Object>> getList(String url) {
+        String result = request(url);
         
 		if (result.length() > 10) { //取到值了才去解析
 			return getObject(result);	

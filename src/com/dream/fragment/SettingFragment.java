@@ -25,11 +25,11 @@ public class SettingFragment extends Fragment {
 	}
 	
 	private void findView(){
-		mTitleBarView=(TitleBarView) mBaseView.findViewById(R.id.title_bar);
+		//mTitleBarView=(TitleBarView) mBaseView.findViewById(R.id.title_bar);
 	}
 	
 	private void initTitleView(){
-		mTitleBarView.setCommonTitle(View.GONE, View.VISIBLE, View.GONE, View.GONE);
-		mTitleBarView.setTitleText(R.string.setting);
+		//mTitleBarView.setCommonTitle(View.GONE, View.VISIBLE, View.GONE, View.GONE);
+		//mTitleBarView.setTitleText(R.string.setting);
 	}
 }
