@@ -11,6 +11,7 @@
     <color name="gold">#000000</color>
     <color name="transparent">#00000000</color>
     <color name="refresh_head_bg">#2B2B2B</color>
+    <color name="white">#ffffffff</color>
     <color name="red">#FF0000</color>
     <color name="backColor">#2000</color>
     <color name="detail_bgColor">#f5f5f5</color>
@@ -33,4 +34,24 @@
 
     <color name="remote_connect_text">#FFe78018</color>
     <color name="remote_disconnect_text">#FF901821</color>
+    
+    <color name="image_loading_bg">#ffefefef</color>
+    <color name="image_loading_bg_night">#ff2b2b2b</color>
+    <color name="divider_day">#ffdddddd</color>
+    
+    <color name="feed_hint_normal">#fff0f0f0</color>
+    <color name="feed_hint_normal_night">#ff252525</color>
+    <color name="feed_hint_pressed">#ffeaeaea</color>
+    <color name="feed_hint_pressed_night">#ff191919</color>
+    <color name="offline_text">#ff4bbff6</color>
+    
+    <color name="item_title_normal">#ff444444</color>
+    <color name="item_title_disabled">#ff888888</color>
+    
+    <color name="ss_comment_time">#ff999999</color>
+    <color name="item_local">#ffffffff</color>
+    <color name="item_abstract">#ff444444</color>
+    
+    <color name="default_text_night">#ff747474</color>
+    <color name="activity_bg_color">#fff5f5f5</color>
 </resources>

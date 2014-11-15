@@ -45,6 +45,8 @@ public class Article implements Serializable {
     private String localurl;
     
     
+    private String imgUrls = "";
+    
     
     public String getId() {
 		return id;
@@ -116,5 +118,12 @@ public class Article implements Serializable {
 	}
 
 
+	public String getImgUrls() {
+		return imgUrls;
+	}
 
+
+	public void setImgUrls(String imgUrls) {
+		this.imgUrls = imgUrls;
+	}
 }

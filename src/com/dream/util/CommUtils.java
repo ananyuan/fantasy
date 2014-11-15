@@ -23,6 +23,8 @@ public class CommUtils {
 
 	public static final String PREFS_NAME = "com.dream";
 	
+	public static final String DATA_FROM_PREFS = "prefs";
+	
 	public static final String LAST_KEY_ARTICLE = "article_last";
 	
 	/** perf 中保存的服务器的地址 key */

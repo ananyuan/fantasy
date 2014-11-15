@@ -5,10 +5,11 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.dream.fragment.ConstactFatherFragment;
 import com.dream.fragment.DynamicFragment;
@@ -18,23 +19,21 @@ import com.dream.fragment.SettingFragment;
 public class MainActivity extends FragmentActivity {
 
 	protected static final String TAG = "MainActivity";
-	private Context mContext;
+	private Context context;
 	private ImageButton mNews,mConstact,mDeynaimic,mSetting;
 	private View currentButton;
 	
-	private LinearLayout buttomBarGroup;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		mContext=this;
+		context = this;
 		
 		findView();
 		init();
 	}
 	
 	private void findView(){
-		buttomBarGroup=(LinearLayout) findViewById(R.id.buttom_bar_group);
 		mNews=(ImageButton) findViewById(R.id.buttom_news);
 		mConstact=(ImageButton) findViewById(R.id.buttom_constact);
 		mDeynaimic=(ImageButton) findViewById(R.id.buttom_deynaimic);
@@ -110,4 +109,24 @@ public class MainActivity extends FragmentActivity {
 		currentButton=v;
 	}
 
+	
+	
+	private long mExitTime;
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			if ((System.currentTimeMillis() - mExitTime) > 2000) {
+				Toast.makeText(context, "在按一次退出", Toast.LENGTH_SHORT).show();
+				mExitTime = System.currentTimeMillis();
+			} else {
+				finish();
+			}
+			return true;
+		}
+		//拦截MENU按钮点击事件，让他无任何操作
+		if (keyCode == KeyEvent.KEYCODE_MENU) {
+			return true;
+		}
+		return super.onKeyDown(keyCode, event);
+	}
 }

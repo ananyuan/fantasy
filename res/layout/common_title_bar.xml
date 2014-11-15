@@ -31,6 +31,8 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
+            android:textColor="@color/blue"
+            android:textSize="16sp"
             android:background="@color/common_title"/>
         
         <LinearLayout

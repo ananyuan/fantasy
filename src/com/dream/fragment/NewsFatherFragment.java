@@ -17,9 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
+import android.widget.ListView;
 
 import com.dream.DetailsActivity;
 import com.dream.R;
@@ -69,17 +68,6 @@ public class NewsFatherFragment extends Fragment {
 		
 		// Set a listener to be invoked when the list should be refreshed.
 		mPullRefreshListView.setOnRefreshListener(new OnRefreshListener2<ListView>() {
-//			@Override
-//			public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-//				String label = DateUtils.formatDateTime(mContext, System.currentTimeMillis(),
-//						DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_ABBREV_ALL);
-//
-//				// Update the LastUpdatedLabel
-//				refreshView.getLoadingLayoutProxy().setLastUpdatedLabel(label);
-//
-//				// Do work to refresh the list here.
-//				new GetDataTask().execute();
-//			}
 			
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<ListView> refreshView) {
@@ -112,7 +100,6 @@ public class NewsFatherFragment extends Fragment {
 				intent.putExtra("article", listAdapter.getItem(position - 1));
 				
 				startActivity(intent);
-				Toast.makeText(mContext, "Go Detail activity!", Toast.LENGTH_SHORT).show();
 			}
 		});
 		
@@ -129,11 +116,9 @@ public class NewsFatherFragment extends Fragment {
 	}
 	
 	private void init() {
-		mTitleBarView.setCommonTitle(View.GONE, View.GONE, View.VISIBLE, View.VISIBLE);
+		mTitleBarView.setCommonTitle(View.GONE, View.VISIBLE, View.GONE, View.GONE);
 		
-		
-		mTitleBarView.setTitleLeft(R.string.cnews);
-		mTitleBarView.setTitleRight(R.string.call);
+		mTitleBarView.setTitleText("柳暗花明");
 	}
 	
 	/**
