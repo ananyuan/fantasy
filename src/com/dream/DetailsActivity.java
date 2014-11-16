@@ -127,7 +127,7 @@ public class DetailsActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String data) {
-			webView.loadDataWithBaseURL (null, data, "text/html", "utf-8", null);
+			webView.loadDataWithBaseURL(CommUtils.getRequestUri(context), data, "text/html", "utf-8", null);
 		}
 	}
 

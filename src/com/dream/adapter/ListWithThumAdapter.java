@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.dream.R;
 import com.dream.db.model.Article;
+import com.dream.util.CommUtils;
 import com.dream.util.ImgLoaderOptions;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -82,14 +83,15 @@ public class ListWithThumAdapter extends BaseAdapter {
 		//获取position对应的数据
 		Article article = getItem(position);
 		mHolder.item_title.setText(article.getTitle());
-		//mHolder.item_source.setText("news.getSource()");
+		mHolder.item_source.setText("栏目名称");
 		//mHolder.comment_count.setText("评论" + "news.getCommentNum()");
 		mHolder.publish_time.setText(article.getAtime());
-		String imgUrls = article.getImgUrls();
+		String imgUrls = article.getImgids();
 		mHolder.comment_count.setVisibility(View.VISIBLE);
 		mHolder.right_padding_view.setVisibility(View.VISIBLE);
 		if(imgUrls.length() > 0){
 			String[] imgArray = imgUrls.split(",");
+			String firstImg = CommUtils.getRequestUri(activity)  + "/file/" + imgArray[0];
 			
 			if(imgArray.length == 1){
 				mHolder.item_image_layout.setVisibility(View.GONE);
@@ -98,22 +100,24 @@ public class ListWithThumAdapter extends BaseAdapter {
 				if(flag){
 					mHolder.large_image.setVisibility(View.VISIBLE);
 					mHolder.right_image.setVisibility(View.GONE);
-					imageLoader.displayImage(imgArray[0], mHolder.large_image, options);
+					imageLoader.displayImage(firstImg, mHolder.large_image, options);
 					mHolder.comment_count.setVisibility(View.GONE);
 					mHolder.right_padding_view.setVisibility(View.GONE);
 				} else {
 					mHolder.large_image.setVisibility(View.GONE);
 					mHolder.right_image.setVisibility(View.VISIBLE);
-					imageLoader.displayImage(imgArray[0], mHolder.right_image, options);
+					imageLoader.displayImage(firstImg, mHolder.right_image, options);
 				}
 			} else {
 				mHolder.large_image.setVisibility(View.GONE);
 				mHolder.right_image.setVisibility(View.GONE);
 				mHolder.item_image_layout.setVisibility(View.VISIBLE);
-				imageLoader.displayImage(imgArray[0], mHolder.item_image_0, options);
-				imageLoader.displayImage(imgArray[1], mHolder.item_image_1, options);
+				imageLoader.displayImage(firstImg, mHolder.item_image_0, options);
+				String secondImg = CommUtils.getRequestUri(activity)  + "/file/" + imgArray[1];
+				imageLoader.displayImage(secondImg, mHolder.item_image_1, options);
 				if (imgArray.length > 2) {
-					imageLoader.displayImage(imgArray[2], mHolder.item_image_2, options);	
+					String thirdImg = CommUtils.getRequestUri(activity)  + "/file/" + imgArray[2];
+					imageLoader.displayImage(thirdImg, mHolder.item_image_2, options);	
 				}
 			}
 		}else{
@@ -131,7 +135,11 @@ public class ListWithThumAdapter extends BaseAdapter {
 		//判断该新闻概述是否为空
 		if (!TextUtils.isEmpty(article.getSummary())) {
 			mHolder.item_abstract.setVisibility(View.VISIBLE);
-			mHolder.item_abstract.setText(article.getSummary());
+			if (article.getSummary().length() > 30) {
+				mHolder.item_abstract.setText(article.getSummary().substring(0, 30));
+			} else {
+				mHolder.item_abstract.setText(article.getSummary());	
+			}
 		} else {
 			mHolder.item_abstract.setVisibility(View.GONE);
 		}

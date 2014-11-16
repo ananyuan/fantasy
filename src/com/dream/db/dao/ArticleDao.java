@@ -9,6 +9,7 @@ import com.dream.db.DatabaseHelper;
 import com.dream.db.OrmSqliteDao;
 import com.dream.db.model.Article;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 
 
 public class ArticleDao implements OrmSqliteDao<Article> {
@@ -48,8 +49,13 @@ public class ArticleDao implements OrmSqliteDao<Article> {
 	@Override
 	public List<Article> find() {
 		try {
-			List<Article> result = articleDao.queryForAll();
-			return result;
+			//List<Article> result = articleDao.queryForAll();
+			
+			QueryBuilder<Article, Integer> query = articleDao.queryBuilder();
+			
+			query.orderBy("atime", false);
+			
+			return query.query();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

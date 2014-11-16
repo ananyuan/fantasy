@@ -177,6 +177,8 @@ public class NewsFatherFragment extends Fragment {
 				lastTime = "2014-01-01";
 			}
 			
+			lastTime = lastTime.replace(" ", "%20");
+			
 			String requestUrl = CommUtils.getRequestUri(mContext) + "/" + "article/list/" + lastTime;
 			
 			List<LinkedHashMap<String, Object>> list = CommUtils.getList(requestUrl);
@@ -206,7 +208,12 @@ public class NewsFatherFragment extends Fragment {
 		@Override
 		protected void onPostExecute(Integer result) {
 			if (result > 0) {
-				dataList.addAll(newList);
+				//刷新的数据，需要放在最上面
+				int count = newList.size();
+				
+				for (int i=0;i<count;i++) {
+					dataList.add(i, newList.get(i));
+				}
 
 				listAdapter.notifyDataSetChanged();
 			}

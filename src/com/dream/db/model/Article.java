@@ -44,8 +44,8 @@ public class Article implements Serializable {
     @DatabaseField
     private String localurl;
     
-    
-    private String imgUrls = "";
+    @DatabaseField
+    private String imgids;
     
     
     public String getId() {
@@ -118,12 +118,14 @@ public class Article implements Serializable {
 	}
 
 
-	public String getImgUrls() {
-		return imgUrls;
+	public String getImgids() {
+		return imgids;
 	}
 
 
-	public void setImgUrls(String imgUrls) {
-		this.imgUrls = imgUrls;
+	public void setImgids(String imgids) {
+		this.imgids = imgids;
 	}
+
+
 }

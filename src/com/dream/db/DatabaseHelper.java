@@ -26,7 +26,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 
 	// the DAO object we use to access the ChatMsgEntity table
-	private Dao<Article, Integer> todoDao = null;
+	private Dao<Article, Integer> articleDao = null;
 	
 	private static final AtomicInteger usageCounter = new AtomicInteger(0);
 
@@ -84,10 +84,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	
     public Dao<Article,Integer> getArticleDao() throws SQLException{  
-        if(todoDao == null){  
-            todoDao = getDao(Article.class);  
+        if(articleDao == null){  
+            articleDao = getDao(Article.class);  
         }  
-        return todoDao;  
+        return articleDao;  
     } 
     
     
@@ -100,7 +100,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	public void close() {
 		if (usageCounter.decrementAndGet() == 0) {
 			super.close();
-			todoDao = null;
+			articleDao = null;
 			helper = null;
 		}
 	}
