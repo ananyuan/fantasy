@@ -25,6 +25,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.dream.db.OrmSqliteDao;
+import com.dream.db.dao.ArticleDao;
 import com.dream.db.model.Article;
 import com.dream.util.CommUtils;
 import com.dream.view.TitleBarView;
@@ -102,14 +104,25 @@ public class DetailsActivity extends Activity {
 		protected String doInBackground(String... id) {
 			String articleid = id[0];
 			
+			OrmSqliteDao<Article> msgDao = new ArticleDao(context); 
+			
+			//先查询本地有没有内容了
+			Article article = msgDao.findById(articleid);
+			
+			if (!TextUtils.isEmpty(article.getContent())) {
+				return article.getContent();
+			}
+			
+			//本地没有内容，就去服务端查询
 			String url = CommUtils.getRequestUri(context) + "/" + "article/id/" + articleid;
 			
 			String data = CommUtils.request(url);
 			
 			ObjectMapper mapper = new ObjectMapper();
-			Article article = null;
 			try {
 				article = mapper.readValue(data, Article.class);
+				
+				msgDao.saveOrUpdate(article);
 			} catch (JsonParseException e) {
 				Log.d(TAG, e.getMessage());
 			} catch (JsonMappingException e) {
