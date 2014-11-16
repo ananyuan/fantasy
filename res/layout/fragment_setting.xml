@@ -148,7 +148,7 @@
                     android:background="@drawable/line" />
 
                 <RelativeLayout
-                    android:id="@+id/mime_layout_02"
+                    android:id="@+id/scan_qrcode"
                     android:layout_width="fill_parent"
                     android:layout_height="42dip"
                     android:clickable="true" >
@@ -169,7 +169,7 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="10dip"
                         android:layout_toRightOf="@id/mime_img_02"
-                        android:text="我的收藏"
+                        android:text="二维码扫描"
                         android:textColor="#202020"
                         android:textSize="16sp" />
 

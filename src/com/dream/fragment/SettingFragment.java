@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.dream.CaptureActivity;
 import com.dream.ItemEditActivity;
 import com.dream.R;
 import com.dream.util.CommUtils;
@@ -22,6 +23,8 @@ public class SettingFragment extends Fragment {
 	private TitleBarView mTitleBarView;
 	
 	private RelativeLayout serverHost;
+	
+	private RelativeLayout scanQrcode;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,6 +55,17 @@ public class SettingFragment extends Fragment {
 				startActivity(intent);
             }
         });
+		
+		scanQrcode = (RelativeLayout) mBaseView.findViewById(R.id.scan_qrcode);
+		scanQrcode.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+				Intent intent = new Intent(mContext, CaptureActivity.class);
+
+				startActivity(intent);
+            }
+        });
+		
 	}
 	
 	private void initTitleView(){
