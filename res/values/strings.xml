@@ -11,4 +11,5 @@
     <string name="dynamic">动态</string>
     <string name="setting">设置</string>
     <string name="favorite_btn_delete">删除</string>
+    <string name="retry_large_image"><u>加载失败，点击重试</u></string>
 </resources>

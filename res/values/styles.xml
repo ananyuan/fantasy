@@ -110,5 +110,17 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:text">@string/favorite_btn_delete</item>
-    </style>        
+    </style>
+    <style name="full_image_progress_text">
+        <item name="android:textSize">12.0sp</item>
+        <item name="android:textColor">#ffeeeeee</item>
+    </style>
+    <style name="full_image_progressbar" parent="@android:style/Widget.ProgressBar.Large">
+        <item name="android:indeterminateDrawable">@drawable/progress_large_holo</item>
+    </style>
+    
+    <style name="full_image_retry_text">
+        <item name="android:textSize">15.0sp</item>
+        <item name="android:textColor">#ffeeeeee</item>
+    </style>    
 </resources>

@@ -40,7 +40,11 @@
         <activity 
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:name=".CaptureActivity" >
-        </activity>        
+        </activity>   
+        <activity 
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:name=".ImageShowActivity" >
+        </activity>
     </application>
 
 </manifest>

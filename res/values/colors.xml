@@ -55,4 +55,6 @@
     
     <color name="default_text_night">#ff747474</color>
     <color name="activity_bg_color">#fff5f5f5</color>
+    
+    <color name="bg_full_image">#ff000000</color>
 </resources>

@@ -176,7 +176,7 @@ public class DetailsActivity extends Activity {
 			}
 			Intent intent = new Intent();
 			intent.putStringArrayListExtra("infos", imgsUrl);
-			//intent.setClass(context, ImageShowActivity.class);  TODO
+			intent.setClass(context, ImageShowActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(intent);
 		}
