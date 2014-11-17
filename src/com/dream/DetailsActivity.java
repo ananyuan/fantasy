@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
@@ -84,7 +85,7 @@ public class DetailsActivity extends Activity {
 			settings.setBuiltInZoomControls(false);
 			webView.setBackgroundResource(R.color.transparent);
 			// 添加js交互接口类，并起别名 imagelistner
-			webView.addJavascriptInterface(new JavascriptInterface(getApplicationContext()),"imagelistner");
+			webView.addJavascriptInterface(new JavascriptInterfaceClass(getApplicationContext()),"imagelistner");
 			webView.setWebChromeClient(new MyWebChromeClient());
 			webView.setWebViewClient(new MyWebViewClient());
 			new ArticleDetailTask().execute(article.getId());
@@ -157,14 +158,15 @@ public class DetailsActivity extends Activity {
 	}	
 	
 	// js通信接口
-	public class JavascriptInterface {
+	public class JavascriptInterfaceClass {
 
 		private Context context;
 
-		public JavascriptInterface(Context context) {
+		public JavascriptInterfaceClass(Context context) {
 			this.context = context;
 		}
 
+		@JavascriptInterface
 		public void openImage(String img) {
 
 			//
