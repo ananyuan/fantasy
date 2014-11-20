@@ -8,6 +8,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/thirtyheight"
+        android:layout_below="@id/title_bar" >
 
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/mime_topimg"
+                android:layout_width="fill_parent"
+                android:layout_height="240dip"
+                android:scaleType="fitXY"
+                android:src="@drawable/mimetopimg" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+
+            <ImageView
+                android:id="@+id/mime_img"
+                android:layout_width="@dimen/eightyheight"
+                android:layout_height="@dimen/eightyheight"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/fortyheight"
+                android:layout_marginTop="@dimen/oneheight"
+                android:scaleType="fitXY"
+                android:src="@drawable/portrait" />
+
+            <TextView
+                android:id="@+id/name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="6dip"
+                android:layout_marginTop="@dimen/name_top"
+                android:layout_toLeftOf="@id/mime_img"
+                android:text="梦想飞起来的猪"
+                android:textColor="#fff"
+                android:textSize="18sp" />
+        </RelativeLayout>
+    </FrameLayout>
 
 </RelativeLayout>

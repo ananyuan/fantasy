@@ -57,4 +57,6 @@
     <color name="activity_bg_color">#fff5f5f5</color>
     
     <color name="bg_full_image">#ff000000</color>
+    
+    <drawable name="kongbai_image">#ffffff</drawable>
 </resources>

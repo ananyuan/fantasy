@@ -1,6 +1,8 @@
 package com.dream.app;
 
 import java.io.File;
+
+import com.baidu.mapapi.SDKInitializer;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -19,6 +21,7 @@ public class AppApplication extends Application {
 		super.onCreate();
 		initImageLoader(getApplicationContext());
 		mAppApplication = this;
+		SDKInitializer.initialize(this);
 	}
 	
 	public static AppApplication getApp() {
