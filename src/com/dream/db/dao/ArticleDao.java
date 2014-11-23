@@ -4,10 +4,12 @@ import java.sql.SQLException;
 import java.util.List;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.dream.db.DatabaseHelper;
 import com.dream.db.OrmSqliteDao;
 import com.dream.db.model.Article;
+import com.dream.db.model.Page;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 
@@ -61,6 +63,32 @@ public class ArticleDao implements OrmSqliteDao<Article> {
 		}
 		return null;
 	}
+	
+
+	@Override
+	public List<Article> find(Page page) {
+		try {
+			QueryBuilder<Article, Integer> query = articleDao.queryBuilder();
+			
+			query.limit(page.getPageSize());
+			query.offset(page.getPageSize() * page.getPageNo() + 1);
+			
+			String order = page.getOrder();
+			if (!TextUtils.isEmpty(order)) {
+				if (page.getSort().equalsIgnoreCase("desc")) {
+					query.orderBy(order, false);	
+				} else {
+					query.orderBy(order, true);
+				}
+			}
+			
+			return articleDao.query(query.prepare());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}	
+	
 
 	@Override
 	public boolean update(Article object) {

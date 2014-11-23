@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.dream.db.model.Article;
+import com.dream.db.model.Dynamic;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -27,6 +28,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
 	// the DAO object we use to access the ChatMsgEntity table
 	private Dao<Article, Integer> articleDao = null;
+	
+	private Dao<Dynamic, Integer> dynamicDao = null;
+	
 	
 	private static final AtomicInteger usageCounter = new AtomicInteger(0);
 
@@ -58,6 +62,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		try {
 			Log.i(DatabaseHelper.class.getName(), "onCreate");
 			TableUtils.createTableIfNotExists(connectionSource, Article.class); 
+			TableUtils.createTableIfNotExists(connectionSource, Dynamic.class); 
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
@@ -73,6 +78,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		try {
 			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
 			TableUtils.dropTable(connectionSource, Article.class, true);
+			TableUtils.dropTable(connectionSource, Dynamic.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -89,7 +95,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }  
         return articleDao;  
     } 
-    
+
+    public Dao<Dynamic,Integer> getDynamicDao() throws SQLException{  
+        if(dynamicDao == null){  
+        	dynamicDao = getDao(Dynamic.class);  
+        }  
+        return dynamicDao;  
+    } 
     
 	/**
 	 * Close the database connections and clear any cached DAOs. For each call to {@link #getHelper(Context)}, there
@@ -101,6 +113,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 		if (usageCounter.decrementAndGet() == 0) {
 			super.close();
 			articleDao = null;
+			dynamicDao = null;
 			helper = null;
 		}
 	}

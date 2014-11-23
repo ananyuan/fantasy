@@ -86,9 +86,14 @@ public class LocationBaiduActivity extends Activity implements
 		mLocClient = new LocationClient(this);
 		mLocClient.registerLocationListener(myListener);
 		LocationClientOption option = new LocationClientOption();
+		option.setAddrType("all");
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
-		option.setScanSpan(1000);
+		option.setScanSpan(5000);
+		option.disableCache(true);//禁止启用缓存定位
+		option.setPoiNumber(5);	//最多返回POI个数	
+		option.setPoiDistance(1000); //poi查询距离		
+		option.setPoiExtraInfo(true); //是否需要POI的电话和地址等详细信息	
 		mLocClient.setLocOption(option);
 		mLocClient.start();
 		
@@ -154,31 +159,30 @@ public class LocationBaiduActivity extends Activity implements
 	             }   
 	             else if (location.getLocType() == BDLocation.TypeNetWorkLocation){  
 	                 sb.append("\naddr : ");  
-	                 sb.append(location.getAddrStr());  
+	                 sb.append(location.getAddrStr() + "   " + location.getCity());  
 	             }  
 	             //poiLocation  
-	             if(location.hasPoi()){  
-	                 sb.append("\nPoi:");  
-	                 sb.append(location.getPoi());  
-	                 }else{  
-	                 sb.append("\nnoPoi information");  
-	            }   			
+				if (location.hasPoi()) {
+					sb.append("\nPoi:");
+					sb.append(location.getPoi());
+				} else {
+					sb.append("\nnoPoi information");
+				}
 	             Log.e("定位结果：",sb.toString());  
 	             Toast.makeText(LocationBaiduActivity.this, sb.toString(), Toast.LENGTH_LONG)
-					.show();
-	             
-			mPoiSearch.searchInCity((new PoiCitySearchOption())
-					.city("北京")
-					.keyword("清华大学西门")
-					.pageNum(0));
-			
-//			mPoiSearch.searchInCity((new PoiCitySearchOption())
-//					.city(location.getCity())
-//					.keyword(location.getAddrStr())
-//					.pageNum(0));
+	 			.show();
+			//if (location.hasPoi()) {
+				mPoiSearch.searchInCity((new PoiCitySearchOption())
+						.city(location.getCity())
+						.keyword(location.getAddrStr())
+						.pageNum(0));
+			//}
 		}
-
+		
+		@Override
 		public void onReceivePoi(BDLocation poiLocation) {
+			Toast.makeText(LocationBaiduActivity.this, poiLocation.getAddrStr(), Toast.LENGTH_LONG)
+			.show();
 		}
 	}
 

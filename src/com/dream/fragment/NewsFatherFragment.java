@@ -26,6 +26,7 @@ import com.dream.adapter.ListWithThumAdapter;
 import com.dream.db.OrmSqliteDao;
 import com.dream.db.dao.ArticleDao;
 import com.dream.db.model.Article;
+import com.dream.db.model.Page;
 import com.dream.util.CommUtils;
 import com.dream.util.PrefUtils;
 import com.dream.view.TitleBarView;
@@ -45,6 +46,7 @@ public class NewsFatherFragment extends Fragment {
 	private PullToRefreshListView mPullRefreshListView;
 	private ListWithThumAdapter listAdapter;
 	private List<Article> dataList = new ArrayList<Article>();
+	private Page page;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +55,8 @@ public class NewsFatherFragment extends Fragment {
 		mBaseView=inflater.inflate(R.layout.fragment_news_father, null);
 		
 		listAdapter = new ListWithThumAdapter(getActivity(), dataList);
+		
+		page = new Page();
 		
 		findView();
 		init();
@@ -111,8 +115,11 @@ public class NewsFatherFragment extends Fragment {
 		
 		actualListView.setAdapter(listAdapter);
 		
-		//初始化数据
+		//初始化数据 , 从本地查询
 		new GetMoreDataTask().execute();
+		
+		//刷新，从服务器上查询
+		new RefreshDataTask().execute();
 	}
 	
 	private void init() {
@@ -134,9 +141,9 @@ public class NewsFatherFragment extends Fragment {
 			int result = -1;
 			
 			OrmSqliteDao<Article> msgDao = new ArticleDao(mContext);  
-			oldList = msgDao.find();
+			oldList = msgDao.find(page);
 			
-			if (oldList.size() > 0) {
+			if (null != oldList && oldList.size() > 0) {
 				result = 1;
 			}
 			return result;
@@ -152,6 +159,8 @@ public class NewsFatherFragment extends Fragment {
 			// Call onRefreshComplete when the list has been refreshed.
 			mPullRefreshListView.onRefreshComplete();
 
+			page.setPageNo(page.getPageNo() + 1);
+			
 			super.onPostExecute(result);
 		}
 	}
