@@ -1,6 +1,5 @@
 package com.dream;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +42,12 @@ import com.baidu.mapapi.search.poi.PoiSearch;
 import com.dream.util.Constant;
 
 public class LocationBaiduActivity extends Activity implements
-											OnGetPoiSearchResultListener{
+		OnGetPoiSearchResultListener {
 	// 定位相关
 	LocationClient mLocClient;
-	
+
 	private PoiSearch mPoiSearch = null;
-	
+
 	public MyLocationListenner myListener = new MyLocationListenner();
 	BitmapDescriptor mCurrentMarker;
 
@@ -58,7 +57,7 @@ public class LocationBaiduActivity extends Activity implements
 	private ArrayList<Data> mlist = new ArrayList<Data>();
 	private ListView listView_place;
 	private BaseAdapter baseAdapter;
-	
+
 	// UI相关
 	Button requestLocButton;
 	boolean isFirstLoc = true;// 是否首次定位
@@ -67,19 +66,19 @@ public class LocationBaiduActivity extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_location);
-		
+
 		mPoiSearch = PoiSearch.newInstance();
 		mPoiSearch.setOnGetPoiSearchResultListener(this);
-		
+
 		listView_place = (ListView) findViewById(R.id.listView_place);
-		
+
 		// 地图初始化
 		mMapView = (MapView) findViewById(R.id.bmapView);
 		mBaiduMap = mMapView.getMap();
-		
+
 		mBaiduMap.setMyLocationConfigeration(new MyLocationConfiguration(
-				LocationMode.NORMAL, true, mCurrentMarker));
-		
+				LocationMode.COMPASS, true, mCurrentMarker));
+
 		// 开启定位图层
 		mBaiduMap.setMyLocationEnabled(true);
 		// 定位初始化
@@ -90,13 +89,13 @@ public class LocationBaiduActivity extends Activity implements
 		option.setOpenGps(true);// 打开gps
 		option.setCoorType("bd09ll"); // 设置坐标类型
 		option.setScanSpan(5000);
-		option.disableCache(true);//禁止启用缓存定位
-		option.setPoiNumber(5);	//最多返回POI个数	
-		option.setPoiDistance(1000); //poi查询距离		
-		option.setPoiExtraInfo(true); //是否需要POI的电话和地址等详细信息	
+		option.disableCache(true);// 禁止启用缓存定位
+		option.setPoiNumber(5); // 最多返回POI个数
+		option.setPoiDistance(1000); // poi查询距离
+		option.setPoiExtraInfo(true); // 是否需要POI的电话和地址等详细信息
 		mLocClient.setLocOption(option);
 		mLocClient.start();
-		
+
 		baseAdapter = new MyLoactionAdapter();
 		listView_place.setAdapter(baseAdapter);
 		listView_place.setOnItemClickListener(new OnItemClickListener() {
@@ -136,53 +135,54 @@ public class LocationBaiduActivity extends Activity implements
 				mBaiduMap.animateMapStatus(u);
 			}
 
-			
 			if (null == location) {
 				return;
 			}
-	             StringBuffer sb = new StringBuffer(256);  
-	             sb.append("time : ");  
-	             sb.append(location.getTime());  
-	             sb.append("\nerror code : ");  
-	             sb.append(location.getLocType());  
-	             sb.append("\nlatitude : ");  
-	             sb.append(location.getLatitude());  
-	             sb.append("\nlontitude : ");  
-	             sb.append(location.getLongitude());  
-	             sb.append("\nradius : ");  
-	             sb.append(location.getRadius());  
-	             if (location.getLocType() == BDLocation.TypeGpsLocation){  
-	                 sb.append("\nspeed : ");  
-	                 sb.append(location.getSpeed());  
-	                 sb.append("\nsatellite : ");  
-	                 sb.append(location.getSatelliteNumber());  
-	             }   
-	             else if (location.getLocType() == BDLocation.TypeNetWorkLocation){  
-	                 sb.append("\naddr : ");  
-	                 sb.append(location.getAddrStr() + "   " + location.getCity());  
-	             }  
-	             //poiLocation  
-				if (location.hasPoi()) {
-					sb.append("\nPoi:");
-					sb.append(location.getPoi());
-				} else {
-					sb.append("\nnoPoi information");
-				}
-	             Log.e("定位结果：",sb.toString());  
-	             Toast.makeText(LocationBaiduActivity.this, sb.toString(), Toast.LENGTH_LONG)
-	 			.show();
-			//if (location.hasPoi()) {
-				mPoiSearch.searchInCity((new PoiCitySearchOption())
-						.city(location.getCity())
-						.keyword(location.getAddrStr())
-						.pageNum(0));
-			//}
+			StringBuffer sb = new StringBuffer(256);
+			sb.append("time : ");
+			sb.append(location.getTime());
+			sb.append("\nerror code : ");
+			sb.append(location.getLocType());
+			sb.append("\nlatitude : ");
+			sb.append(location.getLatitude());
+			sb.append("\nlontitude : ");
+			sb.append(location.getLongitude());
+			sb.append("\nradius : ");
+			sb.append(location.getRadius());
+			if (location.getLocType() == BDLocation.TypeGpsLocation) {
+				sb.append("\nspeed : ");
+				sb.append(location.getSpeed());
+				sb.append("\nsatellite : ");
+				sb.append(location.getSatelliteNumber());
+			} else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
+				sb.append("\naddr : ");
+				sb.append(location.getAddrStr() + "   " + location.getCity());
+			}
+			// poiLocation
+			if (location.hasPoi()) {
+				sb.append("\nPoi:");
+				sb.append(location.getPoi());
+			} else {
+				sb.append("\nnoPoi information");
+			}
+			Log.e("定位结果：", sb.toString());
+			Toast.makeText(LocationBaiduActivity.this, sb.toString(),
+					Toast.LENGTH_LONG).show();
+			// if (location.hasPoi()) {
+			// mPoiSearch.searchInCity((new PoiCitySearchOption())
+			// .city(location.getCity())
+			// .keyword(location.getAddrStr())
+			// .pageNum(0));
+			// }
+			mlist.add(new Data(location.getAddrStr(), location.getCity()));
+			
+			mLocClient.stop();
 		}
-		
+
 		@Override
 		public void onReceivePoi(BDLocation poiLocation) {
-			Toast.makeText(LocationBaiduActivity.this, poiLocation.getAddrStr(), Toast.LENGTH_LONG)
-			.show();
+			Toast.makeText(LocationBaiduActivity.this,
+					poiLocation.getAddrStr(), Toast.LENGTH_LONG).show();
 		}
 	}
 
@@ -213,21 +213,22 @@ public class LocationBaiduActivity extends Activity implements
 	@Override
 	public void onGetPoiDetailResult(PoiDetailResult result) {
 		if (result.error != SearchResult.ERRORNO.NO_ERROR) {
-			Toast.makeText(LocationBaiduActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(LocationBaiduActivity.this, "抱歉，未找到结果",
+					Toast.LENGTH_SHORT).show();
 		} else {
-			Toast.makeText(LocationBaiduActivity.this, result.getName() + ": " + result.getAddress(), Toast.LENGTH_SHORT)
-			.show();
+			Toast.makeText(LocationBaiduActivity.this,
+					result.getName() + ": " + result.getAddress(),
+					Toast.LENGTH_SHORT).show();
 		}
-		
+
 	}
 
 	@Override
 	public void onGetPoiResult(PoiResult result) {
 		if (result == null
 				|| result.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
-			Toast.makeText(LocationBaiduActivity.this, "未找到结果", Toast.LENGTH_LONG)
-			.show();
+			Toast.makeText(LocationBaiduActivity.this, "未找到结果",
+					Toast.LENGTH_LONG).show();
 			return;
 		}
 		if (result.error == SearchResult.ERRORNO.NO_ERROR) {
@@ -237,16 +238,15 @@ public class LocationBaiduActivity extends Activity implements
 			overlay.setData(result);
 			overlay.addToMap();
 			overlay.zoomToSpan();
-			
+
 			List<PoiInfo> poinfos = result.getAllPoi();
-			for (PoiInfo poiInfo: poinfos) {
-				mlist.add(new Data(poiInfo.address, poiInfo.address)); 
+			for (PoiInfo poiInfo : poinfos) {
+				mlist.add(new Data(poiInfo.address, poiInfo.address));
 			}
-			
-			
+
 			return;
 		}
-		
+
 		if (result.error == SearchResult.ERRORNO.AMBIGUOUS_KEYWORD) {
 
 			// 当输入关键字在本市没有找到，但在其他城市找到时，返回包含该关键字信息的城市列表
@@ -256,10 +256,10 @@ public class LocationBaiduActivity extends Activity implements
 				strInfo += ",";
 			}
 			strInfo += "找到结果";
-			Toast.makeText(LocationBaiduActivity.this, strInfo, Toast.LENGTH_LONG)
-					.show();
+			Toast.makeText(LocationBaiduActivity.this, strInfo,
+					Toast.LENGTH_LONG).show();
 		}
-		
+
 	}
 
 	class Data {
@@ -271,13 +271,13 @@ public class LocationBaiduActivity extends Activity implements
 			this.snippet = snippet;
 			this.title = title;
 		}
-	}	
-	
+	}
+
 	class ViewHolder {
 		TextView tv_title;
 		TextView tv_snippet;
 	}
-	
+
 	class MyLoactionAdapter extends BaseAdapter {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
@@ -314,7 +314,7 @@ public class LocationBaiduActivity extends Activity implements
 			return mlist.size();
 		}
 	}
-	
+
 	private class MyPoiOverlay extends PoiOverlay {
 
 		public MyPoiOverlay(BaiduMap baiduMap) {
@@ -325,12 +325,12 @@ public class LocationBaiduActivity extends Activity implements
 		public boolean onPoiClick(int index) {
 			super.onPoiClick(index);
 			PoiInfo poi = getPoiResult().getAllPoi().get(index);
-			
-			Toast.makeText(LocationBaiduActivity.this, poi.address, Toast.LENGTH_LONG)
-			.show();
-			
-//				mPoiSearch.searchPoiDetail((new PoiDetailSearchOption())
-//						.poiUid(poi.uid));
+
+			Toast.makeText(LocationBaiduActivity.this, poi.address,
+					Toast.LENGTH_LONG).show();
+
+			// mPoiSearch.searchPoiDetail((new PoiDetailSearchOption())
+			// .poiUid(poi.uid));
 			return true;
 		}
 	}

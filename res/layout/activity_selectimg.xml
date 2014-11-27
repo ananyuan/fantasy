@@ -145,62 +145,7 @@
                         android:textSize="13.0sp" />
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dip"
-                    android:layout_marginRight="10dip"
-                    android:layout_marginTop="5dip"
-                    android:background="#fff" >
 
-                    <TextView
-                        android:id="@+id/pubto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dip"
-                        android:text="发布到"
-                        android:textColor="#808080"
-                        android:textSize="13.0sp" />
-
-                    <TextView
-                        android:id="@+id/pubtocircle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="5dip"
-                        android:layout_toRightOf="@id/pubto"
-                        android:text="微友圈"
-                        android:textColor="#000"
-                        android:textSize="13.0sp" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/samleto_rl"
-                    android:layout_width="fill_parent"
-                    android:layout_height="40dip"
-                    android:layout_marginLeft="10dip"
-                    android:layout_marginTop="5dip"
-                    android:background="#fff" >
-
-                    <ImageView
-                        android:id="@+id/samleto"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:scaleType="fitXY"
-                        android:src="@drawable/s_choose_bg_nor" />
-
-                    <TextView
-                        android:id="@+id/totv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="10dip"
-                        android:layout_toRightOf="@id/samleto"
-                        android:text="同时显示在微友圈"
-                        android:textColor="#000"
-                        android:textSize="15.0sp" />
-                </RelativeLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>

@@ -7,13 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.dream.util.Bimp;
-import com.dream.util.Constant;
-import com.dream.util.Expressions;
-import com.dream.util.FileUtils;
-import com.dream.util.KeyboardListenEdittext;
-import com.dream.util.KeyboardListenEdittext.MOnKeyboardStateChangedListener;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -44,12 +37,13 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
@@ -60,7 +54,16 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.dream.db.OrmSqliteDao;
+import com.dream.db.dao.DynamicDao;
+import com.dream.db.model.Dynamic;
+import com.dream.util.Bimp;
+import com.dream.util.Constant;
+import com.dream.util.Expressions;
+import com.dream.util.FileUtils;
+import com.dream.util.KeyboardListenEdittext;
+import com.dream.util.KeyboardListenEdittext.MOnKeyboardStateChangedListener;
 
 public class PublishedActivity extends Activity implements OnClickListener {
 
@@ -105,10 +108,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 	private Boolean biaoqingstate = false;
 
 	private Boolean sort;
-	private ImageView samleto;
-	private RelativeLayout samleto_rl;
 
-	private Boolean sameto = false;
 	private ImageView local_icon;
 
 	// public static PublishedActivity publishedinstance=null;
@@ -126,9 +126,6 @@ public class PublishedActivity extends Activity implements OnClickListener {
 
 		Init();
 
-		samleto = (ImageView) findViewById(R.id.samleto);
-		samleto_rl = (RelativeLayout) findViewById(R.id.samleto_rl);
-		samleto_rl.setOnClickListener(this);
 
 		bface_lay = (RelativeLayout) findViewById(R.id.bottom);
 		face_btn = (ImageButton) findViewById(R.id.compose_face);
@@ -227,16 +224,25 @@ public class PublishedActivity extends Activity implements OnClickListener {
 		activity_selectimg_send.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
+				OrmSqliteDao<Dynamic> msgDao = new DynamicDao(mCon); 
 				List<String> list = new ArrayList<String>();
 				for (int i = 0; i < Bimp.drr.size(); i++) {
 					String Str = Bimp.drr.get(i).substring(
 							Bimp.drr.get(i).lastIndexOf("/") + 1,
 							Bimp.drr.get(i).lastIndexOf("."));
 					list.add(FileUtils.SDPATH + Str + ".JPEG");
+					
+					//按照图片，存到本地的表里面去
+					Dynamic dynamic = new Dynamic();
+					dynamic.setAtime("");
+					dynamic.setGeopoint("");
+					dynamic.setImgId("");
+					dynamic.setPosition(local_position.getText().toString());
+					
+					msgDao.saveOrUpdate(dynamic);
+					
+					//TODO 上传服务器
 				}
-				// 高清的压缩图片全部就在 list 路径里面了
-				// 高清的压缩过的 bmp 对象 都在 Bimp.bmp里面
-				// 完成上传服务器后 .........
 
 				Log.v("bitmappppppppppppppppp", list + "");
 
@@ -914,21 +920,6 @@ public class PublishedActivity extends Activity implements OnClickListener {
 			} else {
 				Bimp.act_bool = true;
 				PublishedActivity.this.finish();
-			}
-
-			break;
-
-		case R.id.samleto_rl:
-
-			if (!sameto) {
-
-				samleto.setImageResource(R.drawable.s_choose_bg_hover);
-				sameto = true;
-
-			} else {
-
-				samleto.setImageResource(R.drawable.s_choose_bg_nor);
-				sameto = false;
 			}
 
 			break;
