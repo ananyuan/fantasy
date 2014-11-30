@@ -105,7 +105,7 @@ public class LocationBaiduActivity extends Activity implements
 				Intent intent = getIntent();
 				intent.putExtra(Constant.LOCAL_RESULT,
 						mlist.get(position).title);
-				setResult(Constant.LOCAL_REQUEST_CODE, intent);
+				setResult(Constant.REQUEST_CODE_LOCAL, intent);
 				finish();
 			}
 		});

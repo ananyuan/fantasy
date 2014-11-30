@@ -5,11 +5,22 @@ public class Constant {
     /**
      * 定位当前位置返回request code值
      */
-    public static final int LOCAL_REQUEST_CODE = 1;
+    public static final int REQUEST_CODE_LOCAL = 1;
     /**
      * 编辑修改返回request code值
      */
-    public static final int EDIT_REQUEST_CODE = 2;
+    public static final int REQUEST_CODE_EDIT = 2;
+    
+    /**
+     * 照相机照相request code值
+     */
+    public static final int REQUEST_CODE_TAKE_PICTURE = 0;
+	
+	/**
+	 * 从相册获取图片 request code值
+	 */
+    public static final int REQUEST_CODE_GET_PICTURE = 5;
+    
     
     /**
      * 编辑返回页面“request code” key

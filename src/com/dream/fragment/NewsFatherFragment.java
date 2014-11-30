@@ -141,6 +141,7 @@ public class NewsFatherFragment extends Fragment {
 			int result = -1;
 			
 			OrmSqliteDao<Article> msgDao = new ArticleDao(mContext);  
+			page.setOrder("atime");
 			oldList = msgDao.find(page);
 			
 			if (null != oldList && oldList.size() > 0) {

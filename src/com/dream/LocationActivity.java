@@ -3,18 +3,36 @@ package com.dream;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
+import android.graphics.Color;
+import android.location.Location;
+import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.CameraUpdateFactory;
-import com.amap.api.maps.LocationSource;
-import com.amap.api.maps.MapView;
 import com.amap.api.maps.AMap.InfoWindowAdapter;
 import com.amap.api.maps.AMap.OnInfoWindowClickListener;
 import com.amap.api.maps.AMap.OnMarkerClickListener;
-import com.amap.api.maps.LocationSource.OnLocationChangedListener;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.LocationSource;
+import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
@@ -29,25 +47,6 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.amap.api.services.poisearch.PoiSearch.OnPoiSearchListener;
 import com.dream.util.Constant;
 import com.dream.util.ShowMsg;
-
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Intent;
-import android.graphics.Color;
-import android.location.Location;
-import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 public class LocationActivity extends Activity implements LocationSource,
 		AMapLocationListener, OnMarkerClickListener, InfoWindowAdapter,
@@ -125,7 +124,7 @@ public class LocationActivity extends Activity implements LocationSource,
 				Intent intent = getIntent();
 				intent.putExtra(Constant.LOCAL_RESULT,
 						mlist.get(position).title);
-				setResult(Constant.LOCAL_REQUEST_CODE, intent);
+				setResult(Constant.REQUEST_CODE_LOCAL, intent);
 				finish();
 			}
 		});
@@ -497,7 +496,7 @@ public class LocationActivity extends Activity implements LocationSource,
 	public void onInfoWindowClick(Marker marker) {
 		Intent intent = getIntent();
 		intent.putExtra(Constant.LOCAL_RESULT, marker.getTitle());
-		setResult(Constant.LOCAL_REQUEST_CODE, intent);
+		setResult(Constant.REQUEST_CODE_LOCAL, intent);
 		finish();
 	}
 
@@ -518,7 +517,7 @@ public class LocationActivity extends Activity implements LocationSource,
 		} else if (v == activity_selectimg_clear) {
 			Intent intent = getIntent();
 			intent.putExtra(Constant.LOCAL_IF_CLEAR, true);
-			setResult(Constant.LOCAL_REQUEST_CODE, intent);
+			setResult(Constant.REQUEST_CODE_LOCAL, intent);
 			finish();
 		}
 	}

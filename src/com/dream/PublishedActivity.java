@@ -110,6 +110,8 @@ public class PublishedActivity extends Activity implements OnClickListener {
 	private Boolean sort;
 
 	private ImageView local_icon;
+	
+	Dynamic dynamic = new Dynamic();
 
 	// public static PublishedActivity publishedinstance=null;
 
@@ -233,10 +235,9 @@ public class PublishedActivity extends Activity implements OnClickListener {
 					list.add(FileUtils.SDPATH + Str + ".JPEG");
 					
 					//按照图片，存到本地的表里面去
-					Dynamic dynamic = new Dynamic();
+					
 					dynamic.setAtime("");
 					dynamic.setGeopoint("");
-					dynamic.setImgId("");
 					dynamic.setPosition(local_position.getText().toString());
 					
 					msgDao.saveOrUpdate(dynamic);
@@ -432,7 +433,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 				public void onClick(View v) {
 					Intent intent = new Intent(PublishedActivity.this,
 							GetPicActivity.class);
-					startActivity(intent);
+					startActivityForResult(intent, Constant.REQUEST_CODE_GET_PICTURE);
 					dismiss();
 				}
 			});
@@ -445,7 +446,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 		}
 	}
 
-	private static final int TAKE_PICTURE = 0x000000;
+
 	private String path = "";
 	private View show_local;
 	private String localResult;
@@ -459,44 +460,51 @@ public class PublishedActivity extends Activity implements OnClickListener {
 		path = file.getPath();
 		Uri imageUri = Uri.fromFile(file);
 		openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		startActivityForResult(openCameraIntent, TAKE_PICTURE);
+		startActivityForResult(openCameraIntent, Constant.REQUEST_CODE_TAKE_PICTURE);
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-		case TAKE_PICTURE:
-			if (Bimp.drr.size() < 9 && resultCode == -1) {
-				Bimp.drr.add(path);
-			}
-			break;
-
-		case Constant.LOCAL_REQUEST_CODE:
-			boolean local_clear = false;
-			try {
-				localResult = data.getStringExtra(Constant.LOCAL_RESULT);
-				Log.e("StartActivityActivity",
-						"onActivityResult------>定位当前信息返回出错");
-			} catch (Exception e) {
-			}
-			try {
-				local_clear = data.getBooleanExtra(Constant.LOCAL_IF_CLEAR,
-						false);
-				Log.e("StartActivityActivity",
-						"onActivityResult------>当前位置信息清除标志返回出错");
-			} catch (Exception e) {
-			}
-			if (localResult != null) {
-				local_icon
-						.setImageResource(R.drawable.s_n_dynamic_btn_gps_selected);
-				local_position.setText(localResult);
-			}
-			if (local_clear) {
-				local_icon
-						.setImageResource(R.drawable.s_n_dynamic_btn_gps_unselected);
-				local_position.setText(getResources().getString(
-						R.string.l_position));
-			}
-			break;
+			case Constant.REQUEST_CODE_TAKE_PICTURE:
+				if (Bimp.drr.size() < 9 && resultCode == -1) {
+					Bimp.drr.add(path);
+				}
+				break;
+	
+			case Constant.REQUEST_CODE_LOCAL:
+				boolean local_clear = false;
+				try {
+					localResult = data.getStringExtra(Constant.LOCAL_RESULT);
+					Log.e("StartActivityActivity",
+							"onActivityResult------>定位当前信息返回出错");
+				} catch (Exception e) {
+				}
+				try {
+					local_clear = data.getBooleanExtra(Constant.LOCAL_IF_CLEAR,
+							false);
+					Log.e("StartActivityActivity",
+							"onActivityResult------>当前位置信息清除标志返回出错");
+				} catch (Exception e) {
+				}
+				if (localResult != null) {
+					local_icon
+							.setImageResource(R.drawable.s_n_dynamic_btn_gps_selected);
+					local_position.setText(localResult);
+				}
+				if (local_clear) {
+					local_icon
+							.setImageResource(R.drawable.s_n_dynamic_btn_gps_unselected);
+					local_position.setText(getResources().getString(
+							R.string.l_position));
+				}
+				break;
+			
+			case Constant.REQUEST_CODE_GET_PICTURE:
+				
+				dynamic.setImgId("");
+				
+				
+				break;
 		}
 	}
 
@@ -858,7 +866,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 
 		case R.id.show_local:
 			Intent intent = new Intent(PublishedActivity.this, LocationBaiduActivity.class);
-			startActivityForResult(intent, Constant.LOCAL_REQUEST_CODE);
+			startActivityForResult(intent, Constant.REQUEST_CODE_LOCAL);
 
 			break;
 

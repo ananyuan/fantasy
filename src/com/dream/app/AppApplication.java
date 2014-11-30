@@ -28,7 +28,15 @@ public class AppApplication extends Application {
 		return mAppApplication;
 	}
 	
-	/** 初始化ImageLoader */
+	/** 
+	 * 初始化ImageLoader 
+	 * String imageUri = "http://site.com/image.png"; // from Web
+		String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+		String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+		String imageUri = "assets://image.png"; // from assets
+		String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * 
+	 */
 	public static void initImageLoader(Context context) {
 		File cacheDir = StorageUtils.getOwnCacheDirectory(context, "dream/Cache");//获取到缓存的目录地址
 		Log.d("cacheDir", cacheDir.getPath());

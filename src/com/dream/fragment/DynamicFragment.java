@@ -131,6 +131,7 @@ public class DynamicFragment extends Fragment
 			int result = -1;
 			
 			OrmSqliteDao<Dynamic> msgDao = new DynamicDao(mContext);  
+			page.setOrder("atime");
 			oldList = msgDao.find(page);
 			
 			if (null != oldList && oldList.size() > 0) {

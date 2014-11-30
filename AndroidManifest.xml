@@ -64,6 +64,15 @@
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:name=".LocationBaiduActivity" >
         </activity>  
+        <activity 
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:name=".GetPicActivity" >
+        </activity>
+        <activity 
+            android:theme="@android:style/Theme.Light.NoTitleBar"
+            android:name=".ShowSelectImageActivity" >
+        </activity>
+        
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
