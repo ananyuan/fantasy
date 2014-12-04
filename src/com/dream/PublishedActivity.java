@@ -232,7 +232,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 
 			public void onClick(View v) {
 				
-				new SaveDataTask().execute();
+				new SaveDataTask(PublishedActivity.this).execute();
 				
 
 			}
@@ -244,6 +244,12 @@ public class PublishedActivity extends Activity implements OnClickListener {
 	 *
 	 */
 	private class SaveDataTask extends AsyncTask<Integer, Integer, Integer> {
+		Activity context;
+		
+		public SaveDataTask(Activity context) {
+			super();
+			this.context = context;
+		}
 		
 		@Override
 		protected Integer doInBackground(Integer... params) {
@@ -256,10 +262,12 @@ public class PublishedActivity extends Activity implements OnClickListener {
 				saveObj.setImgId(imgPath);
 				saveObj.setPosition(local_position.getText().toString());
 				saveObj.setGeopoint("");
+				saveObj.setAtime(CommUtils.getDatetime());
 				
 				String fileId = CommUtils.uploadOneImg(saveObj, mContext); 
 				
 				saveObj.setImgId(fileId);
+				saveObj.setId(fileId);
 				
 				msgDao.saveOrUpdate(saveObj);  //保存本地
 			}
@@ -272,7 +280,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onPostExecute(Integer result) {
 			if (result > 0) { 
-				
+				context.finish();
 			}
 			
 			super.onPostExecute(result);

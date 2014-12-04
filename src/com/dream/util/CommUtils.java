@@ -5,7 +5,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -46,12 +48,24 @@ public class CommUtils {
 	/** perf 中保存的服务器的地址 value */
 	public static final String HOST_KEY_VALUE = "10.198.1.48:8083";
 	
+	public static final String FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss";
 	
 	public static String getRequestUri(Context context) {
 		String uri = "http://" + PrefUtils.getStr(context, HOST_KEY, HOST_KEY_VALUE);
 		
 		return uri;
 	}
+	
+	/**
+	 * 
+	 * @return 当前时间
+	 */
+    public static String getDatetime() {
+        Calendar calendar = Calendar.getInstance();
+        
+        SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATETIME);
+        return sdf.format(calendar.getTime());
+    }
 	
 	public static String request(String url) {
 		InputStream inputStream = null;

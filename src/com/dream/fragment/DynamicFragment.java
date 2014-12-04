@@ -68,23 +68,6 @@ public class DynamicFragment extends Fragment
         gridView.setOnItemClickListener(this);
         
         new GetMoreDataTask().execute();
-        
-        
-//        for (int i=0;i<10;i++) {
-//        	
-//        	String fileId = "9MfFpM5mdCMv532wptwZUM";
-//        	if (i%2 == 1 ) {
-//        		fileId = "6KpkZ84DXNtz4vRqL77xW7";
-//        	}
-//        	
-//        	String thumbnailUri = CommUtils.getRequestUri(mContext) + "/file/" + fileId;
-//        	String fullImageUri = CommUtils.getRequestUri(mContext) + "/file/" + fileId;
-//        	
-//        	photoItemList.add(new PhotoItem(thumbnailUri, fullImageUri));
-//        }
-//        
-//        gridAdapter.notifyDataSetChanged();
-        
 	}
 
 	private void findView(){
@@ -137,33 +120,10 @@ public class DynamicFragment extends Fragment
 			if (null != oldList && oldList.size() > 0) {
 				result = 1;
 			}
-			result = 1;
 			
 			return result;
 		}
 
-		private List<PhotoItem> getTestData() {
-			List<PhotoItem> xx = new ArrayList<PhotoItem>();
-
-			String[] pics = "X8TAs5daAnRhMCjdxYheND,XGSpBp1vNVTBciLxo8Xqbx,7n1wQ492fHeKNiMbpvyejB,9MfFpM5mdCMv532wptwZUM,9niWUX6L7GxZY53oVwxbQQ,6KpkZ84DXNtz4vRqL77xW7,3N26LB3i4b4mxADWBeR2EZ,9iqXy4r2XDogr6g6HiGi9E,CbfXB2sKz1wXa1QZzjwQ1e,7215JAJD1HNv8s7Y1Z7ECa".split(","); 
-			for (int i = 0; i < 10; i++) {
-
-				String fileId = "9MfFpM5mdCMv532wptwZUM";
-				if (i % 2 == 1) {
-					fileId = "6KpkZ84DXNtz4vRqL77xW7";
-				}
-				
-				fileId = pics[i];
-
-				String thumbnailUri = CommUtils.getRequestUri(mContext)
-						+ "/file/" + fileId;
-				String fullImageUri = CommUtils.getRequestUri(mContext)
-						+ "/file/" + fileId;
-
-				xx.add(new PhotoItem(thumbnailUri, fullImageUri));
-			}
-			return xx;
-		}
 
 		@Override
 		protected void onPostExecute(Integer result) {
@@ -177,7 +137,7 @@ public class DynamicFragment extends Fragment
 		        	photoItemList.add(new PhotoItem(thumbnailUri, fullImageUri));
 				}
 				
-				photoItemList.addAll(getTestData()); //TODO will del
+				//photoItemList.addAll(getTestData()); //TODO will del
 				
 				gridAdapter.notifyDataSetChanged();
 			}
