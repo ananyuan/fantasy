@@ -26,6 +26,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.dream.adapter.GetImgGroupAdapter;
+import com.dream.util.Constant;
 import com.dream.util.ImageBean;
 import com.dream.view.TitleBarView;
 
@@ -83,7 +84,7 @@ public class GetPicActivity extends Activity {
 				mIntent.putStringArrayListExtra("data", (ArrayList<String>)childList);
 				mIntent.putExtra("fileDir", list.get(position).getFileDir());
 				
-				startActivity(mIntent);
+				startActivityForResult(mIntent, Constant.REQUEST_CODE_GET_PICTURE_TODETAIL);
 				
 			}
 		});
@@ -183,6 +184,16 @@ public class GetPicActivity extends Activity {
 		mTitleBarView.setCommonTitle(View.GONE, View.VISIBLE, View.GONE, View.GONE);
 		mTitleBarView.setTitleText("相册");
 	}
+	
+	
+	@Override  
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {       
+        super.onActivityResult(requestCode, resultCode, data);        
+        if(requestCode==Constant.REQUEST_CODE_GET_PICTURE_TODETAIL && data != null){  
+            setResult(Constant.REQUEST_CODE_GET_PICTURE_TODETAIL, data);  
+            finish();  
+        }  
+    }  
 }
 
 

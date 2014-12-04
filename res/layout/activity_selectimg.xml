@@ -106,7 +106,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical" >
 
-                <GridView
+                <com.dream.view.WrapGridView
                     android:id="@+id/noScrollgridview"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                     android:numColumns="4"
                     android:scrollbars="none"
                     android:verticalSpacing="5dp" >
-                </GridView>
+                </com.dream.view.WrapGridView>
 
                 <RelativeLayout
                     android:id="@+id/show_local"

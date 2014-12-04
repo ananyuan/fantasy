@@ -11,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.dream.fragment.ConstactFatherFragment;
+import com.dream.fragment.MailFatherFragment;
 import com.dream.fragment.DynamicFragment;
 import com.dream.fragment.NewsFatherFragment;
 import com.dream.fragment.SettingFragment;
@@ -67,7 +67,7 @@ public class MainActivity extends FragmentActivity {
 		public void onClick(View v) {
 			FragmentManager fm=getSupportFragmentManager();
 			FragmentTransaction ft=fm.beginTransaction();
-			ConstactFatherFragment constactFatherFragment=new ConstactFatherFragment();
+			MailFatherFragment constactFatherFragment=new MailFatherFragment();
 			ft.replace(R.id.fl_content, constactFatherFragment,MainActivity.TAG);
 			ft.commit();
 			setButton(v);

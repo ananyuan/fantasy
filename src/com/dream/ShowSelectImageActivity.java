@@ -3,10 +3,12 @@ package com.dream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -15,6 +17,7 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.dream.adapter.SelectImgAdapter;
+import com.dream.util.Constant;
 import com.dream.view.TitleBarView;
 
 public class ShowSelectImageActivity extends Activity {
@@ -86,6 +89,23 @@ public class ShowSelectImageActivity extends Activity {
             	HashSet<String> rtnimgs = mAdapter.getSelectedImgs();
             	
             	Toast.makeText(context, rtnimgs.toString(), Toast.LENGTH_SHORT).show();
+            	
+            	Iterator<String> it = rtnimgs.iterator();
+            	StringBuilder str = new StringBuilder();
+				while (it.hasNext()) {
+					str.append(it.next()).append(",");
+				}
+				
+				if (str.length() > 0) {
+					str.setLength(str.length() - 1);
+				}
+            	
+            	Intent intent = new Intent();  
+            	intent.putExtra(Constant.RESULT_GET_PICTURE, str.toString());  
+            	
+            	setResult(Constant.REQUEST_CODE_GET_PICTURE_TODETAIL, intent);
+            	
+            	finish();
             }
         });
 	}

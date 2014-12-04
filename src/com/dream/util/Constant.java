@@ -22,6 +22,18 @@ public class Constant {
     public static final int REQUEST_CODE_GET_PICTURE = 5;
     
     
+	/**
+	 * 从相册获取图片 request code值
+	 */
+    public static final int REQUEST_CODE_GET_PICTURE_TODETAIL = 6;
+    
+    
+	/**
+	 * 获取图片返回结果串
+	 */
+    public static final String RESULT_GET_PICTURE = "result_get_pic";
+    
+    
     /**
      * 编辑返回页面“request code” key
      */

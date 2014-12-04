@@ -1,6 +1,7 @@
 package com.dream.util;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -8,16 +9,28 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.json.JSONException;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.dream.db.model.Dynamic;
 
 public class CommUtils {
 
@@ -114,5 +127,66 @@ public class CommUtils {
 		}
 		
 		return null;
+	}
+
+	
+	/**
+	 * 
+	 * @param saveObj 上传文件到服务器端
+	 * @param context 上下文对象
+	 */
+	public static String uploadOneImg(Dynamic saveObj, Context context) {
+		try {
+			return uploadOneFile(saveObj.getImgId(), context);
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return "";
+	}
+	
+	
+	/**
+	 * 
+	 * @param localFilePath 本地文件
+	 * @param context 上下文
+	 * @return 文件上传完之后 的  ID
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public static String uploadOneFile(String localFilePath, Context context)
+			throws ClientProtocolException, IOException, JSONException {
+		HttpClient httpclient = new DefaultHttpClient();
+		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
+
+		String upLoadServerUri = getRequestUri(context) + "/file/upload";
+		HttpPost httppost = new HttpPost(upLoadServerUri);
+		File file = new File(localFilePath);
+
+		MultipartEntity mpEntity = new MultipartEntity(); // 文件传输
+		ContentBody cbFile = new FileBody(file);
+		mpEntity.addPart("userfile", cbFile); // <input type="file" name="userfile" /> 对应的
+
+		httppost.setEntity(mpEntity);
+		System.out.println("executing request " + httppost.getRequestLine());
+
+		HttpResponse response = httpclient.execute(httppost);
+		HttpEntity resEntity = response.getEntity();
+
+		String restr = "";
+		if (resEntity != null) {
+			restr = EntityUtils.toString(resEntity, "utf-8");
+		}
+		if (resEntity != null) {
+			resEntity.consumeContent();
+		}
+
+		httpclient.getConnectionManager().shutdown();
+		return restr;
 	}
 }

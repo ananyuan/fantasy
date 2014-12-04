@@ -1,8 +1,8 @@
 package com.dream;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +21,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -59,15 +60,20 @@ import com.dream.db.OrmSqliteDao;
 import com.dream.db.dao.DynamicDao;
 import com.dream.db.model.Dynamic;
 import com.dream.util.Bimp;
+import com.dream.util.CommUtils;
 import com.dream.util.Constant;
 import com.dream.util.Expressions;
 import com.dream.util.FileUtils;
+import com.dream.util.ImgLoaderOptions;
 import com.dream.util.KeyboardListenEdittext;
 import com.dream.util.KeyboardListenEdittext.MOnKeyboardStateChangedListener;
+import com.dream.view.WrapGridView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class PublishedActivity extends Activity implements OnClickListener {
 
-	private GridView noScrollgridview;
+	private WrapGridView noScrollgridview;
 	private GridAdapter adapter;
 	private TextView activity_selectimg_send;
 	private TextView activity_selectimg_back;
@@ -99,7 +105,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 
 	private KeyboardListenEdittext content_et;
 
-	private Context mCon;
+	private Context mContext;
 
 	private RelativeLayout bface_lay;
 	private ImageButton face_btn;
@@ -112,13 +118,12 @@ public class PublishedActivity extends Activity implements OnClickListener {
 	private ImageView local_icon;
 	
 	Dynamic dynamic = new Dynamic();
-
-	// public static PublishedActivity publishedinstance=null;
+	List<String> imgIdList = new ArrayList<String>();
 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_selectimg);
-		mCon = this;
+		mContext = this;
 
 		Intent intent;
 		Bundle bundle;
@@ -196,7 +201,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 
 	public void Init() {
 
-		noScrollgridview = (GridView) findViewById(R.id.noScrollgridview);
+		noScrollgridview = (WrapGridView) findViewById(R.id.noScrollgridview);
 		if (sort) {
 			noScrollgridview.setSelector(new ColorDrawable(Color.TRANSPARENT));
 			adapter = new GridAdapter(this);
@@ -226,37 +231,63 @@ public class PublishedActivity extends Activity implements OnClickListener {
 		activity_selectimg_send.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				OrmSqliteDao<Dynamic> msgDao = new DynamicDao(mCon); 
-				List<String> list = new ArrayList<String>();
-				for (int i = 0; i < Bimp.drr.size(); i++) {
-					String Str = Bimp.drr.get(i).substring(
-							Bimp.drr.get(i).lastIndexOf("/") + 1,
-							Bimp.drr.get(i).lastIndexOf("."));
-					list.add(FileUtils.SDPATH + Str + ".JPEG");
-					
-					//按照图片，存到本地的表里面去
-					
-					dynamic.setAtime("");
-					dynamic.setGeopoint("");
-					dynamic.setPosition(local_position.getText().toString());
-					
-					msgDao.saveOrUpdate(dynamic);
-					
-					//TODO 上传服务器
-				}
+				
+				new SaveDataTask().execute();
+				
 
-				Log.v("bitmappppppppppppppppp", list + "");
-
-				FileUtils.deleteDir();
 			}
 		});
 	}
+	
+	/**
+	 * 保存数据
+	 *
+	 */
+	private class SaveDataTask extends AsyncTask<Integer, Integer, Integer> {
+		
+		@Override
+		protected Integer doInBackground(Integer... params) {
+			int result = -1;
+			
+			OrmSqliteDao<Dynamic> msgDao = new DynamicDao(mContext); 
+			
+			for (String imgPath: imgIdList) {
+				Dynamic saveObj = new Dynamic();
+				saveObj.setImgId(imgPath);
+				saveObj.setPosition(local_position.getText().toString());
+				saveObj.setGeopoint("");
+				
+				String fileId = CommUtils.uploadOneImg(saveObj, mContext); 
+				
+				saveObj.setImgId(fileId);
+				
+				msgDao.saveOrUpdate(saveObj);  //保存本地
+			}
+			
+			result = 1;
+			
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			if (result > 0) { 
+				
+			}
+			
+			super.onPostExecute(result);
+		}
+	}
+	
 
 	@SuppressLint("HandlerLeak")
 	public class GridAdapter extends BaseAdapter {
 		private LayoutInflater inflater; // 视图容器
 		private int selectedPosition = -1;// 选中的位置
 		private boolean shape;
+		
+		protected ImageLoader imageLoader = ImageLoader.getInstance();
+		DisplayImageOptions options;
 
 		public boolean isShape() {
 			return shape;
@@ -268,14 +299,15 @@ public class PublishedActivity extends Activity implements OnClickListener {
 
 		public GridAdapter(Context context) {
 			inflater = LayoutInflater.from(context);
+			options = ImgLoaderOptions.getListOptions();
 		}
 
 		public void update() {
-			loading();
+			//loading();
 		}
 
 		public int getCount() {
-			return (Bimp.bmp.size() + 1);
+			return (imgIdList.size() + 1);
 		}
 
 		public Object getItem(int arg0) {
@@ -321,7 +353,10 @@ public class PublishedActivity extends Activity implements OnClickListener {
 					holder.image.setVisibility(View.GONE);
 				}
 			} else {
-				holder.image.setImageBitmap(Bimp.bmp.get(position));
+				String imgPath = imgIdList.get(position -1);
+				
+				String imageUri = "file://" + imgPath;
+				imageLoader.displayImage(imageUri, holder.image, options);
 			}
 
 			return convertView;
@@ -342,38 +377,6 @@ public class PublishedActivity extends Activity implements OnClickListener {
 			}
 		};
 
-		public void loading() {
-			new Thread(new Runnable() {
-				public void run() {
-					while (true) {
-						if (Bimp.max == Bimp.drr.size()) {
-							Message message = new Message();
-							message.what = 1;
-							handler.sendMessage(message);
-							break;
-						} else {
-							try {
-								String path = Bimp.drr.get(Bimp.max);
-								System.out.println(path);
-								Bitmap bm = Bimp.revitionImageSize(path);
-								Bimp.bmp.add(bm);
-								String newStr = path.substring(
-										path.lastIndexOf("/") + 1,
-										path.lastIndexOf("."));
-								FileUtils.saveBitmap(bm, "" + newStr);
-								Bimp.max += 1;
-								Message message = new Message();
-								message.what = 1;
-								handler.sendMessage(message);
-							} catch (IOException e) {
-
-								e.printStackTrace();
-							}
-						}
-					}
-				}
-			}).start();
-		}
 	}
 
 	public String getString(String s) {
@@ -500,10 +503,19 @@ public class PublishedActivity extends Activity implements OnClickListener {
 				break;
 			
 			case Constant.REQUEST_CODE_GET_PICTURE:
-				
-				dynamic.setImgId("");
-				
-				
+				if (null != data) {
+					String imgIds = data.getStringExtra(Constant.RESULT_GET_PICTURE);
+					
+					List<String> newList = Arrays.asList(imgIds.split(","));
+					
+					imgIdList.addAll(newList);
+					
+					dynamic.setImgId(imgIds);
+					
+					//将图片显示到grid里面去
+					adapter.notifyDataSetChanged();
+				}
+
 				break;
 		}
 	}
@@ -539,7 +551,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 				matrix.postScale(0.45f, 0.45f);
 				Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, width,
 						height, matrix, true);
-				ImageSpan imageSpan = new ImageSpan(mCon, resizedBitmap);
+				ImageSpan imageSpan = new ImageSpan(mContext, resizedBitmap);
 
 				SpannableString spannableString = new SpannableString(
 						expressionImageNames[arg2].substring(0,
@@ -641,7 +653,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 					listItems.add(listItem);
 				}
 
-				SimpleAdapter simpleAdapter = new SimpleAdapter(mCon,
+				SimpleAdapter simpleAdapter = new SimpleAdapter(mContext,
 						listItems, R.layout.singleexpression,
 						new String[] { "image" }, new int[] { R.id.image });
 				gView2.setAdapter(simpleAdapter);
@@ -661,7 +673,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 						matrix.postScale(0.45f, 0.45f);
 						Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0,
 								0, width, height, matrix, true);
-						ImageSpan imageSpan = new ImageSpan(mCon, resizedBitmap);
+						ImageSpan imageSpan = new ImageSpan(mContext, resizedBitmap);
 						SpannableString spannableString = new SpannableString(
 								expressionImageNames1[arg2].substring(0,
 										expressionImageNames1[arg2].length()));
@@ -694,7 +706,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 					listItems1.add(listItem);
 				}
 
-				SimpleAdapter simpleAdapter1 = new SimpleAdapter(mCon,
+				SimpleAdapter simpleAdapter1 = new SimpleAdapter(mContext,
 						listItems1, R.layout.singleexpression,
 						new String[] { "image" }, new int[] { R.id.image });
 				gView3.setAdapter(simpleAdapter1);
@@ -714,7 +726,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 						matrix.postScale(0.45f, 0.45f);
 						Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0,
 								0, width, height, matrix, true);
-						ImageSpan imageSpan = new ImageSpan(mCon, resizedBitmap);
+						ImageSpan imageSpan = new ImageSpan(mContext, resizedBitmap);
 						SpannableString spannableString = new SpannableString(
 								expressionImageNames2[arg2].substring(0,
 										expressionImageNames2[arg2].length()));
@@ -748,7 +760,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 					listItems2.add(listItem);
 				}
 
-				SimpleAdapter simpleAdapter2 = new SimpleAdapter(mCon,
+				SimpleAdapter simpleAdapter2 = new SimpleAdapter(mContext,
 						listItems2, R.layout.singleexpression,
 						new String[] { "image" }, new int[] { R.id.image });
 				gView4.setAdapter(simpleAdapter2);
@@ -768,7 +780,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 						matrix.postScale(0.45f, 0.45f);
 						Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0,
 								0, width, height, matrix, true);
-						ImageSpan imageSpan = new ImageSpan(mCon, resizedBitmap);
+						ImageSpan imageSpan = new ImageSpan(mContext, resizedBitmap);
 						SpannableString spannableString = new SpannableString(
 								expressionImageNames3[arg2].substring(0,
 										expressionImageNames3[arg2].length()));
@@ -802,7 +814,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 					listItems3.add(listItem);
 				}
 
-				SimpleAdapter simpleAdapter3 = new SimpleAdapter(mCon,
+				SimpleAdapter simpleAdapter3 = new SimpleAdapter(mContext,
 						listItems3, R.layout.singleexpression,
 						new String[] { "image" }, new int[] { R.id.image });
 				gView5.setAdapter(simpleAdapter3);
@@ -822,7 +834,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 						matrix.postScale(0.45f, 0.45f);
 						Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0,
 								0, width, height, matrix, true);
-						ImageSpan imageSpan = new ImageSpan(mCon, resizedBitmap);
+						ImageSpan imageSpan = new ImageSpan(mContext, resizedBitmap);
 
 						SpannableString spannableString = new SpannableString(
 								expressionImageNames4[arg2].substring(0,
