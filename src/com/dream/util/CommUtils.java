@@ -2,6 +2,7 @@ package com.dream.util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -30,6 +31,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.json.JSONException;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Log;
 
 import com.dream.db.model.Dynamic;
@@ -67,6 +71,24 @@ public class CommUtils {
         return sdf.format(calendar.getTime());
     }
 	
+    
+    /**
+     * 
+     * @return 保存图片的地址
+     */
+    public static String getImageDir() {
+    	String fileDir = Environment.getExternalStorageDirectory() + "/myimage/";
+    	
+    	
+		File dirFile = new File(fileDir);
+		if (!dirFile.exists()) {
+			dirFile.mkdirs();
+		}
+		
+		return fileDir;
+    }
+    
+    
 	public static String request(String url) {
 		InputStream inputStream = null;
         String result = "";
@@ -150,14 +172,27 @@ public class CommUtils {
 	 * @param context 上下文对象
 	 */
 	public static String uploadOneImg(Dynamic saveObj, Context context) {
+		return uploadImage(saveObj.getImgId(), context);
+	}
+	
+	/**
+	 * 
+	 * @param imgPath 图片路径
+	 * @param context 上下文
+	 * @return 上传文件返回的文件ID
+	 */
+	public static String uploadImage(String imgPath, Context context) {
 		try {
-			return uploadOneFile(saveObj.getImgId(), context);
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
+			File imgFile = new File(imgPath);
+			InputStream is = new FileInputStream(imgFile);
+	        Bitmap mBitmap = BitmapFactory.decodeStream(is); 
+	        
+	        //将图缩小，返回小图的路径
+	        String newFilePath = ImageUtils.CutPictureByWidth(mBitmap, Constant.CUT_IMG_WIDTH);
+	        
+	        return uploadOneFile(newFilePath, context);
+		} catch (Exception e) {
+			Log.e("uploadImage Exception", e.getLocalizedMessage());
 		}
 		
 		return "";

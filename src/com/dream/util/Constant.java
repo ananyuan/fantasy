@@ -96,4 +96,10 @@ public class Constant {
      * 读取数据长度 单位：byte
      */
     public static final int SEND_MESSAGE_DELAY = 40;
+    
+    
+    /**
+     * 图片的宽度
+     */
+    public static final int CUT_IMG_WIDTH = 800;
 }

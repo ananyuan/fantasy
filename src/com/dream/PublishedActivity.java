@@ -428,19 +428,19 @@ public class PublishedActivity extends Activity implements OnClickListener {
 			showAtLocation(parent, Gravity.BOTTOM, 0, 0);
 			update();
 
-			Button bt1 = (Button) view
+			Button btn_take_photo = (Button) view
 					.findViewById(R.id.item_popupwindows_camera);
-			Button bt2 = (Button) view
+			Button btn_pick_photo = (Button) view
 					.findViewById(R.id.item_popupwindows_Photo);
 			Button bt3 = (Button) view
 					.findViewById(R.id.item_popupwindows_cancel);
-			bt1.setOnClickListener(new OnClickListener() {
+			btn_take_photo.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
-					photo();
+					takePhoto();
 					dismiss();
 				}
 			});
-			bt2.setOnClickListener(new OnClickListener() {
+			btn_pick_photo.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					Intent intent = new Intent(PublishedActivity.this,
 							GetPicActivity.class);
@@ -463,13 +463,14 @@ public class PublishedActivity extends Activity implements OnClickListener {
 	private String localResult;
 	private TextView local_position;
 
-	public void photo() {
+	public void takePhoto() {
 		Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		File file = new File(Environment.getExternalStorageDirectory()
-				+ "/myimage/", String.valueOf(System.currentTimeMillis())
-				+ ".jpg");
+		String fileDir = CommUtils.getImageDir();
+		
+		File file = new File(fileDir, String.valueOf(System.currentTimeMillis()) + ".jpg");
 		path = file.getPath();
 		Uri imageUri = Uri.fromFile(file);
+		openCameraIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
 		openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
 		startActivityForResult(openCameraIntent, Constant.REQUEST_CODE_TAKE_PICTURE);
 	}
@@ -477,9 +478,28 @@ public class PublishedActivity extends Activity implements OnClickListener {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 			case Constant.REQUEST_CODE_TAKE_PICTURE:
-				if (Bimp.drr.size() < 9 && resultCode == -1) {
-					Bimp.drr.add(path);
-				}
+				if (resultCode == RESULT_OK) {  
+		            if(data != null){ //可能尚未指定intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);  
+		                //返回有缩略图  
+		                if(data.hasExtra("data")){  
+		                    Bitmap thumbnail = data.getParcelableExtra("data");  
+		                    //得到bitmap后的操作  
+		                }  
+		            } else {  
+		                //由于指定了目标uri，存储在目标uri，通过目标uri，找到图片    
+						imgIdList.add(path);
+						
+						String newImgId = dynamic.getImgId();
+						if (dynamic.getImgId().length() > 0) {
+							newImgId = dynamic.getImgId() + "," + path;
+						}
+						dynamic.setImgId(newImgId);
+						
+						//将图片显示到grid里面去
+						adapter.notifyDataSetChanged();
+		            }  
+		        } 
+				
 				break;
 	
 			case Constant.REQUEST_CODE_LOCAL:

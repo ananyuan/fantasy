@@ -19,23 +19,23 @@ public class Dynamic implements Serializable {
     
     
     @DatabaseField
-    private String position;
+    private String position = "";
     
 	@DatabaseField
-    private String atime;
+    private String atime = "";
     
     
     @DatabaseField
-    private String geopoint;
+    private String geopoint = "";
 
     
     
     @DatabaseField
-    private String imgIds;
+    private String imgIds = "";
 
     
     @DatabaseField
-    private String memo;
+    private String memo = "";
 
 
 	public String getId() {

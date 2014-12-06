@@ -12,14 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.dream.R;
+import com.dream.db.model.Dynamic;
 import com.dream.util.ImgLoaderOptions;
 import com.etsy.android.grid.util.DynamicHeightImageView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
+public class PhotoAdapter extends ArrayAdapter<Dynamic> {
 	private static final String TAG = "PhotoAdaptor";
 	
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
@@ -32,7 +34,7 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
 
 	private static final SparseArray<Double> sPositionHeightRatios = new SparseArray<Double>();
 
-	public PhotoAdapter(Context context, int resourceId, List<PhotoItem> items,
+	public PhotoAdapter(Context context, int resourceId, List<Dynamic> items,
 			boolean useList) {
 		super(context, resourceId, items);
 		mRandom = new Random();
@@ -50,6 +52,8 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
 
 	private class ViewHolder {
 		DynamicHeightImageView photoImageView;
+		TextView address;
+		TextView dtime;
 	}
 
 	/**
@@ -63,15 +67,16 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 
 		ViewHolder holder = null;
-		PhotoItem photoItem = getItem(position);
+		Dynamic dynamicItem = getItem(position);
 		View viewToUse = null;
 
-		LayoutInflater mInflater = (LayoutInflater) context
-				.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
 		if (convertView == null) {
 			holder = new ViewHolder();
 			viewToUse = mInflater.inflate(resourceId, null);
 			holder.photoImageView = (DynamicHeightImageView) viewToUse.findViewById(R.id.imageView);
+			holder.address = (TextView)viewToUse.findViewById(R.id.dynamic_address);
+			holder.dtime = (TextView)viewToUse.findViewById(R.id.dynamic_time);
 			
 			viewToUse.setTag(holder);
 		} else {
@@ -83,12 +88,11 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
 		int backgroundIndex = position >= mBackgroundColors.size() ? position
 				% mBackgroundColors.size() : position;
 		Log.d(TAG, "getView position:" + position + " h:" + positionHeight);
-
-		// Set the thumbnail
-
-		//holder.photoImageView.setImageURI(photoItem.getThumbnailUri());
 		
-		imageLoader.displayImage(photoItem.getThumbnailUri().toString(), holder.photoImageView, options);
+		imageLoader.displayImage(dynamicItem.getImgId(), holder.photoImageView, options);
+		
+		holder.address.setText(dynamicItem.getPosition());
+		holder.dtime.setText(dynamicItem.getAtime());
 		
 		holder.photoImageView.setHeightRatio(positionHeight);
 
@@ -109,8 +113,7 @@ public class PhotoAdapter extends ArrayAdapter<PhotoItem> {
 	}
 
 	private double getRandomHeightRatio() {
-		return (mRandom.nextDouble() / 2.0) + 1.0; // height will be 1.0 - 1.5
-													// the width
+		return (mRandom.nextDouble() / 2.0) + 1.0; // height will be 1.0 - 1.5 the width
 	}
 }
 

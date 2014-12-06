@@ -59,14 +59,13 @@ public class ShowSelectImageActivity extends Activity {
 		
 		String[] imgs = mImgDir.list();
 		for (String fileName: imgs) {
-			String extName = fileName.substring(fileName.lastIndexOf("."), fileName.length() - 1);
-			if (".png.jpg.gif.jpeg".indexOf(extName.toLowerCase()) > 0) {
-				mImgs.add(fileName);
+			if (fileName.length() > 0) {
+				String extName = fileName.substring(fileName.lastIndexOf("."), fileName.length() - 1);
+				if (".png.jpg.gif.jpeg".indexOf(extName.toLowerCase()) > 0) {
+					mImgs.add(fileName);
+				}
 			}
 		}
-		
-		//mImgs = Arrays.asList(mImgDir.list());
-		
 		
 		mAdapter = new SelectImgAdapter(getApplicationContext(), mImgs,
 				R.layout.select_image_grid_item, mImgDir.getAbsolutePath());

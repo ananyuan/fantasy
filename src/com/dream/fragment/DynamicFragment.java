@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import com.dream.PublishedActivity;
 import com.dream.R;
 import com.dream.adapter.PhotoAdapter;
-import com.dream.adapter.PhotoItem;
 import com.dream.db.OrmSqliteDao;
 import com.dream.db.dao.DynamicDao;
 import com.dream.db.model.Dynamic;
@@ -33,7 +32,7 @@ public class DynamicFragment extends Fragment
 	private static final String TAG = "DynamicFragment";
 	
     protected PhotoAdapter gridAdapter;
-    protected ArrayList<PhotoItem> photoItemList;
+    protected ArrayList<Dynamic> dynamicItemList;
     protected StaggeredGridView gridView;
 	
 	private Context mContext;
@@ -59,11 +58,10 @@ public class DynamicFragment extends Fragment
 		
 		gridView = (StaggeredGridView) mBaseView.findViewById(R.id.grid_view);
 		
-		photoItemList = new ArrayList<PhotoItem>() ;
-        gridAdapter = new PhotoAdapter(mContext, R.layout.item_grid_photo, photoItemList, false);
+		dynamicItemList = new ArrayList<Dynamic>() ;
+        gridAdapter = new PhotoAdapter(mContext, R.layout.item_grid_photo, dynamicItemList, false);
         
         gridView.setAdapter(gridAdapter);
-        
         gridView.setOnScrollListener(this);
         gridView.setOnItemClickListener(this);
         
@@ -130,14 +128,12 @@ public class DynamicFragment extends Fragment
 			if (result > 0) { //取到数据了， 
 				
 				for (Dynamic dynamic: oldList) {
-					
-		        	String thumbnailUri = CommUtils.getRequestUri(mContext) + "/file/" + dynamic.getImgId();
 		        	String fullImageUri = CommUtils.getRequestUri(mContext) + "/file/" + dynamic.getImgId();
 		        	
-		        	photoItemList.add(new PhotoItem(thumbnailUri, fullImageUri));
+		        	dynamic.setImgId(fullImageUri);
+		        	
+		        	dynamicItemList.add(dynamic);
 				}
-				
-				//photoItemList.addAll(getTestData()); //TODO will del
 				
 				gridAdapter.notifyDataSetChanged();
 			}
