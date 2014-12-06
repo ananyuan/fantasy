@@ -102,4 +102,9 @@ public class Constant {
      * 图片的宽度
      */
     public static final int CUT_IMG_WIDTH = 800;
+    
+    /**
+     * 获取地址信息
+     */
+    public static final int SILENT_GET_LOCATION = 10;
 }

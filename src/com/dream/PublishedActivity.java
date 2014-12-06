@@ -23,7 +23,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
@@ -56,6 +55,10 @@ import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.dream.db.OrmSqliteDao;
 import com.dream.db.dao.DynamicDao;
 import com.dream.db.model.Dynamic;
@@ -237,6 +240,9 @@ public class PublishedActivity extends Activity implements OnClickListener {
 
 			}
 		});
+		
+		//默认自己去获取位置信息
+		new GetLocationSilent(this);
 	}
 	
 	/**
@@ -280,12 +286,13 @@ public class PublishedActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onPostExecute(Integer result) {
 			if (result > 0) { 
-				context.finish();
+				context.finish();  //上传完成， 将该activity 关闭
 			}
 			
 			super.onPostExecute(result);
 		}
 	}
+	
 	
 
 	@SuppressLint("HandlerLeak")
@@ -1028,4 +1035,61 @@ public class PublishedActivity extends Activity implements OnClickListener {
 
 	}
 
+	
+	
+	class GetLocationSilent {
+
+		LocationClient mLocClient;
+		
+		Context context;
+		
+		public MyLocationListenner myListener = new MyLocationListenner();
+		
+		public GetLocationSilent(Context context) {
+			this.context = context;
+			
+			init();
+		}
+		
+		
+		private void init() {
+			// 定位初始化
+			mLocClient = new LocationClient(context);
+			mLocClient.registerLocationListener(myListener);
+			LocationClientOption option = new LocationClientOption();
+			option.setAddrType("all");
+			option.setOpenGps(true);// 打开gps
+			option.setCoorType("bd09ll"); // 设置坐标类型
+			option.setScanSpan(5000);
+			option.disableCache(true);// 禁止启用缓存定位
+			option.setPoiNumber(5); // 最多返回POI个数
+			option.setPoiDistance(1000); // poi查询距离
+			option.setPoiExtraInfo(true); // 是否需要POI的电话和地址等详细信息
+			mLocClient.setLocOption(option);
+			mLocClient.start();
+		}
+		
+		/**
+		 * 定位SDK监听函数
+		 */
+		public class MyLocationListenner implements BDLocationListener {
+
+			@Override
+			public void onReceiveLocation(BDLocation location) {
+				if (location == null) {
+					return;
+				}
+				
+				local_icon.setImageResource(R.drawable.s_n_dynamic_btn_gps_selected);
+				local_position.setText(location.getAddrStr());
+				
+				mLocClient.stop();
+			}
+
+			@Override
+			public void onReceivePoi(BDLocation poiLocation) {
+			}
+		}
+	}
+	
 }

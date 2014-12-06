@@ -182,17 +182,25 @@ public class CommUtils {
 	 * @return 上传文件返回的文件ID
 	 */
 	public static String uploadImage(String imgPath, Context context) {
+		InputStream is = null;
 		try {
 			File imgFile = new File(imgPath);
-			InputStream is = new FileInputStream(imgFile);
+			is = new FileInputStream(imgFile);
 	        Bitmap mBitmap = BitmapFactory.decodeStream(is); 
-	        
-	        //将图缩小，返回小图的路径
-	        String newFilePath = ImageUtils.CutPictureByWidth(mBitmap, Constant.CUT_IMG_WIDTH);
-	        
-	        return uploadOneFile(newFilePath, context);
+	        if (mBitmap.getWidth() > Constant.CUT_IMG_WIDTH) {
+		        //将图缩小，返回小图的路径
+	        	imgPath = ImageUtils.CutPictureByWidth(mBitmap, Constant.CUT_IMG_WIDTH);
+	        }
+
+	        return uploadOneFile(imgPath, context);
 		} catch (Exception e) {
 			Log.e("uploadImage Exception", e.getLocalizedMessage());
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		return "";
