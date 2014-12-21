@@ -172,7 +172,7 @@ public class CommUtils {
 	 * @param context 上下文对象
 	 */
 	public static String uploadOneImg(Dynamic saveObj, Context context) {
-		return uploadImage(saveObj.getImgId(), context);
+		return uploadImage(saveObj.getImgId(), context, saveObj.getId());
 	}
 	
 	/**
@@ -181,7 +181,7 @@ public class CommUtils {
 	 * @param context 上下文
 	 * @return 上传文件返回的文件ID
 	 */
-	public static String uploadImage(String imgPath, Context context) {
+	public static String uploadImage(String imgPath, Context context, String fileId) {
 		InputStream is = null;
 		try {
 			File imgFile = new File(imgPath);
@@ -192,7 +192,7 @@ public class CommUtils {
 	        	imgPath = ImageUtils.CutPictureByWidth(mBitmap, Constant.CUT_IMG_WIDTH);
 	        }
 
-	        return uploadOneFile(imgPath, context);
+	        return uploadOneFile(imgPath, context, fileId);
 		} catch (Exception e) {
 			Log.e("uploadImage Exception", e.getLocalizedMessage());
 		} finally {
@@ -216,12 +216,17 @@ public class CommUtils {
 	 * @throws IOException
 	 * @throws JSONException
 	 */
-	public static String uploadOneFile(String localFilePath, Context context)
+	public static String uploadOneFile(String localFilePath, Context context, String fileId)
 			throws ClientProtocolException, IOException, JSONException {
 		HttpClient httpclient = new DefaultHttpClient();
 		httpclient.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
 
 		String upLoadServerUri = getRequestUri(context) + "/file/upload";
+		
+		if (null != fileId && fileId.length() > 0) { //如果给定了fileId 则用这个ID上传
+			upLoadServerUri += "/" + fileId;
+		}
+		
 		HttpPost httppost = new HttpPost(upLoadServerUri);
 		File file = new File(localFilePath);
 

@@ -151,7 +151,7 @@ public class DynamicFragment extends Fragment
 		//滚动加载
 		
 		int lastInScreen = firstVisibleItem + visibleItemCount;
-        if (lastInScreen >= totalItemCount) {
+        if (lastInScreen >= totalItemCount && totalItemCount > 0) {
             Log.d(TAG, "onScroll lastInScreen - so load more");
             new GetMoreDataTask().execute();
         }

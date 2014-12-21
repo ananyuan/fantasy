@@ -116,7 +116,7 @@ public class DynamicDao implements OrmSqliteDao<Dynamic> {
 			QueryBuilder<Dynamic, Integer> query = dynamicDao.queryBuilder();
 			
 			query.limit(page.getPageSize());
-			query.offset(page.getPageSize() * page.getPageNo() + 1);
+			query.offset(page.getPageSize() * page.getPageNo());
 			
 			String order = page.getOrder();
 			if (!TextUtils.isEmpty(order)) {

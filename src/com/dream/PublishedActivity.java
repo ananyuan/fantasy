@@ -70,6 +70,7 @@ import com.dream.util.FileUtils;
 import com.dream.util.ImgLoaderOptions;
 import com.dream.util.KeyboardListenEdittext;
 import com.dream.util.KeyboardListenEdittext.MOnKeyboardStateChangedListener;
+import com.dream.util.UuidUtils;
 import com.dream.view.WrapGridView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -270,8 +271,9 @@ public class PublishedActivity extends Activity implements OnClickListener {
 				saveObj.setGeopoint("");
 				saveObj.setAtime(CommUtils.getDatetime());
 				
-				String fileId = CommUtils.uploadOneImg(saveObj, mContext); 
+				//String fileId = CommUtils.uploadOneImg(saveObj, mContext); 
 				
+				String fileId = UuidUtils.base58Uuid();
 				saveObj.setImgId(fileId);
 				saveObj.setId(fileId);
 				
