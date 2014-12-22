@@ -3,6 +3,7 @@ package com.dream.util;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -77,7 +78,7 @@ public class CommUtils {
      * @return 保存图片的地址
      */
     public static String getImageDir() {
-    	String fileDir = Environment.getExternalStorageDirectory() + "/myimage/";
+    	String fileDir = Environment.getExternalStorageDirectory() + "/fantasy/";
     	
     	
 		File dirFile = new File(fileDir);
@@ -250,5 +251,35 @@ public class CommUtils {
 
 		httpclient.getConnectionManager().shutdown();
 		return restr;
+	}
+	
+	/**
+	 * 
+	 * @param sourcePath
+	 * @param fileId
+	 */
+	public static void copyImgFile(String sourcePath, String fileId) {
+		String newPath = getImageDir() + fileId;
+		try {
+			int bytesum = 0;
+			int byteread = 0;
+			File oldfile = new File(sourcePath);
+			if (oldfile.exists()) {
+				InputStream inStream = new FileInputStream(sourcePath);
+				FileOutputStream fs = new FileOutputStream(newPath);
+				byte[] buffer = new byte[1444];
+				int length;
+				while ((byteread = inStream.read(buffer)) != -1) {
+					bytesum += byteread;
+					System.out.println(bytesum);
+					fs.write(buffer, 0, byteread);
+				}
+				inStream.close();
+			}
+		} catch (Exception e) {
+			System.out.println("复制单个文件操作出错");
+			e.printStackTrace();
+
+		}
 	}
 }

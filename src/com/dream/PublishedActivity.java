@@ -277,6 +277,9 @@ public class PublishedActivity extends Activity implements OnClickListener {
 				saveObj.setImgId(fileId);
 				saveObj.setId(fileId);
 				
+				//将imgPath的图片 复制 一张 到 fileId对应的目录
+				CommUtils.copyImgFile(imgPath, fileId);
+				
 				msgDao.saveOrUpdate(saveObj);  //保存本地
 			}
 			
