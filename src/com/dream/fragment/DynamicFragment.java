@@ -31,8 +31,6 @@ public class DynamicFragment extends Fragment {
 		return mBaseView;
 	}
 	
-
-	
 	private void initTitleView(){
 		mTitleBarView=(TitleBarView) mBaseView.findViewById(R.id.title_bar);
 		

@@ -90,6 +90,17 @@ public class CommUtils {
     }
     
     
+	/**
+	 * 判断手机是否有SD卡。
+	 * 
+	 * @return 有SD卡返回true，没有返回false。
+	 */
+    public static boolean hasSDCard() {
+		return Environment.MEDIA_MOUNTED.equals(Environment
+				.getExternalStorageState());
+	}
+    
+    
 	public static String request(String url) {
 		InputStream inputStream = null;
         String result = "";

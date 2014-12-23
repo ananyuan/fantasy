@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,7 +38,7 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 	/**
 	 * 每页要加载的图片数量
 	 */
-	public static final int PAGE_SIZE = 15;
+	public static final int TEXT_HEIGHT = 36;
 
 	/**
 	 * 记录当前已加载到第几页
@@ -105,8 +104,6 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 	 * 记录所有界面上的图片，用以可以随时控制对图片的释放。
 	 */
 	private List<ImageView> imageViewList = new ArrayList<ImageView>();
-	
-	//private List<Dynamic> dynamics = new ArrayList<Dynamic>();
 
 	/**
 	 * 在Handler中进行图片可见性检查的判断，以及加载更多图片的操作。
@@ -183,8 +180,8 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 	 * 开始加载下一页的图片，每张图片都会开启一个异步线程去下载。
 	 */
 	public void loadMoreImages() {
-		if (hasSDCard()) {
-			new GetMoreDataTask().execute(); //获取数据
+		if (CommUtils.hasSDCard()) {
+			new GetImageDataTask().execute(); //获取数据
 		} else {
 			Toast.makeText(getContext(), "未发现SD卡", Toast.LENGTH_SHORT).show();
 		}
@@ -195,7 +192,7 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 	 * 加载更多
 	 *
 	 */
-	private class GetMoreDataTask extends AsyncTask<Integer, Integer, Integer> {
+	private class GetImageDataTask extends AsyncTask<Integer, Integer, Integer> {
 
 		List<Dynamic> oldList = new ArrayList<Dynamic>();
 		
@@ -218,17 +215,14 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 		@Override
 		protected void onPostExecute(Integer result) {
 			if (result > 0) { //取到数据了
-				//dynamics.clear();
 				for (Dynamic dynamic: oldList) {
 		        	String fullImageUri = CommUtils.getRequestUri(mContext) + "/file/" + dynamic.getImgId();
 		        	
 		        	dynamic.setImgId(fullImageUri);
 		        	
-		        	//dynamics.add(dynamic);
-		        	
 		        	LoadImageTask task = new LoadImageTask();
 					taskCollection.add(task);
-					task.execute(dynamic.getImgId());
+					task.execute(dynamic.getImgId(), dynamic.getPosition() + "~~" + dynamic.getAtime());
 				}
 			}
 			page.setPageNo(page.getPageNo() + 1);
@@ -263,26 +257,20 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 	}
 
 	/**
-	 * 判断手机是否有SD卡。
-	 * 
-	 * @return 有SD卡返回true，没有返回false。
-	 */
-	private boolean hasSDCard() {
-		return Environment.MEDIA_MOUNTED.equals(Environment
-				.getExternalStorageState());
-	}
-
-	/**
 	 * 异步下载图片的任务。
 	 * 
 	 * @author guolin
 	 */
-	class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+	class LoadImageTask extends AsyncTask<String, String, Bitmap> {
 
 		/**
 		 * 图片的URL地址
 		 */
 		private String mImageUrl;
+		
+		private String address = "";
+		
+		private String atime = "";
 
 		/**
 		 * 可重复使用的ImageView
@@ -304,6 +292,9 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 		@Override
 		protected Bitmap doInBackground(String... params) {
 			mImageUrl = params[0];
+			String[] addressTime = params[1].split("~~");
+			address = addressTime[0];
+			atime = addressTime[1];
 			Bitmap imageBitmap = imageLoader
 					.getBitmapFromMemoryCache(mImageUrl);
 			if (imageBitmap == null) {
@@ -345,15 +336,6 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 				imageView.setPadding(5, 5, 5, 5);
 				imageView.setTag(R.string.image_url, mImageUrl);
 				
-				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams( 
-		                LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT); 
-				lp.addRule(RelativeLayout.BELOW, imageView.getId());    
-				
-				
-		        LinearLayout view = new LinearLayout(mContext); 
-		        view.setLayoutParams(lp);//设置布局参数 
-		        view.setOrientation(LinearLayout.HORIZONTAL);// 设置子View的Linearlayout// 为垂直方向布局 
-		 
 		        //定义子View中两个元素的布局 
 		        ViewGroup.LayoutParams vlp = new ViewGroup.LayoutParams( 
 		                ViewGroup.LayoutParams.WRAP_CONTENT, 
@@ -362,19 +344,20 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 		                ViewGroup.LayoutParams.WRAP_CONTENT, 
 		                ViewGroup.LayoutParams.WRAP_CONTENT); 
 		         
-		        TextView tv1 = new TextView(mContext); 
-		        TextView tv2 = new TextView(mContext); 
-		        tv1.setLayoutParams(vlp);//设置TextView的布局 
-		        tv2.setLayoutParams(vlp2); 
-		        tv1.setText("地址"); 
-		        tv2.setText("时间");
+		        TextView addressView = new TextView(mContext); 
+		        TextView timeView = new TextView(mContext); 
+		        addressView.setLayoutParams(vlp);//设置TextView的布局 
+		        timeView.setLayoutParams(vlp2); 
+		        addressView.setText(address); 
+		        addressView.setHeight(TEXT_HEIGHT);
+		        timeView.setText(atime);
+		        timeView.setHeight(TEXT_HEIGHT);
+				
+		        LinearLayout layout = findColumnToAdd(imageView, imageHeight + TEXT_HEIGHT * 2);
+		        layout.addView(imageView);
+		        layout.addView(addressView);
+		        layout.addView(timeView);
 		        
-		        view.addView(imageView);
-		        view.addView(tv1);//将TextView 添加到子View 中 
-		        view.addView(tv2);//将TextView 添加到子View 中 
-				
-				
-				findColumnToAdd(imageView, imageHeight).addView(view);
 				imageViewList.add(imageView);
 			}
 		}
