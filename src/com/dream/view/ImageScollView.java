@@ -8,7 +8,6 @@ import java.util.Set;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
@@ -247,8 +246,9 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 				if (bitmap != null) {
 					imageView.setImageBitmap(bitmap);
 				} else {
-					LoadImageTask task = new LoadImageTask(imageView);
-					task.execute(imageUrl);
+//					LoadImageTask task = new LoadImageTask(imageView);
+					bitmap = imageLoader.loadImage(imageUrl, columnWidth);
+					imageView.setImageBitmap(bitmap);
 				}
 			} else {
 				imageView.setImageResource(R.drawable.pictures_no);

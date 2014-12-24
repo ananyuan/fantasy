@@ -63,7 +63,7 @@ public class ImageLoader {
 	 */
 	public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
 		if (getBitmapFromMemoryCache(key) == null) {
-			mMemoryCache.put(key, bitmap);
+			//mMemoryCache.put(key, bitmap);
 		}
 	}
 

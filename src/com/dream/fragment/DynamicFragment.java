@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.dream.PublishedActivity;
 import com.dream.R;
+import com.dream.view.ImageScollView;
 import com.dream.view.TitleBarView;
 
 public class DynamicFragment extends Fragment {
@@ -20,6 +21,7 @@ public class DynamicFragment extends Fragment {
 	private Context mContext;
 	private View mBaseView;
 	private TitleBarView mTitleBarView;
+	private ImageScollView imgeView;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,6 +29,8 @@ public class DynamicFragment extends Fragment {
 		mContext = getActivity();
 		mBaseView = inflater.inflate(R.layout.fragment_dynamic, null);
 		initTitleView();
+		
+		imgeView = (ImageScollView) mBaseView.findViewById(R.id.image_scroll_view);
 		
 		return mBaseView;
 	}
@@ -51,14 +55,15 @@ public class DynamicFragment extends Fragment {
         });
 	}
 
-//	/**
-//	 * 调用onCreate(), 目的是刷新数据, 
-//	 * 从另一activity界面返回到该activity界面时, 此方法自动调用
-//	 */
-//	@Override
-//	public void onResume() {
-//		super.onResume();
-//		onCreate(null);	
-//	}
+	/**
+	 * 调用onCreate(), 目的是刷新数据, 
+	 * 从另一activity界面返回到该activity界面时, 此方法自动调用
+	 */
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		//onDestroyView();
+	}
 
 }
