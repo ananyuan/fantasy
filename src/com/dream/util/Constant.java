@@ -27,6 +27,11 @@ public class Constant {
 	 */
     public static final int REQUEST_CODE_GET_PICTURE_TODETAIL = 6;
     
+	/**
+	 * 从照片墙 转到发布的页面 request code值
+	 */
+    public static final int REQUEST_CODE_PUBLISH = 7;
+    
     
 	/**
 	 * 获取图片返回结果串
@@ -62,6 +67,12 @@ public class Constant {
      * 清除当前位置返回 key
      */
     public static final String LOCAL_IF_CLEAR = "local_clear";
+    
+    
+    /**
+     * 从发布返回图片墙
+     */
+    public static final String BACK_FROM_PUBLISH = "back_from_publish";
     
     
     /**

@@ -105,6 +105,26 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 	private List<ImageView> imageViewList = new ArrayList<ImageView>();
 
 	/**
+	 * 刷新 ， 将之前的布局及文件都清除，重新获取数据 ， 暂时在发布之后的返回用到
+	 */
+	public void refresh() {
+		
+		imageViewList.clear();
+		if (null != firstColumn && null != secondColumn) {
+			firstColumn.removeAllViewsInLayout();
+			secondColumn.removeAllViewsInLayout();
+		}
+		scrollViewHeight = getHeight();
+		firstColumnHeight = 0;
+		secondColumnHeight = 0;
+		lastScrollY = -1;
+		page = new Page();		
+		
+		loadMoreImages();
+	}
+	
+	
+	/**
 	 * 在Handler中进行图片可见性检查的判断，以及加载更多图片的操作。
 	 */
 	private static Handler handler = new Handler() {

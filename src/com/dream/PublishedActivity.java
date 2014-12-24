@@ -291,6 +291,11 @@ public class PublishedActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onPostExecute(Integer result) {
 			if (result > 0) { 
+				//返回数据
+				Intent intent = getIntent();
+				intent.putExtra(Constant.BACK_FROM_PUBLISH, Constant.BACK_FROM_PUBLISH);
+				setResult(Constant.REQUEST_CODE_PUBLISH, intent);
+				
 				context.finish();  //上传完成， 将该activity 关闭
 			}
 			
