@@ -113,7 +113,7 @@ public class ImageLoader {
 	 * @return 加载到内存的图片。
 	 */
 	public Bitmap loadImage(String imageUrl, int columnWidth) {
-		File imageFile = new File(getImagePath(imageUrl));
+		File imageFile = new File(CommUtils.getImagePath(imageUrl));
 		if (!imageFile.exists()) {
 			downloadImage(imageUrl, columnWidth);
 		}
@@ -156,7 +156,7 @@ public class ImageLoader {
 			con.setDoInput(true);
 			con.setDoOutput(true);
 			bis = new BufferedInputStream(con.getInputStream());
-			imageFile = new File(getImagePath(imageUrl));
+			imageFile = new File(CommUtils.getImagePath(imageUrl));
 			fos = new FileOutputStream(imageFile);
 			bos = new BufferedOutputStream(fos);
 			byte[] b = new byte[1024];
@@ -191,17 +191,5 @@ public class ImageLoader {
 		}
 	}
 	
-	/**
-	 * 获取图片的本地存储路径。
-	 * 
-	 * @param imageUrl
-	 *            图片的URL地址。
-	 * @return 图片的本地存储路径。
-	 */
-	private String getImagePath(String imageUrl) {
-		int lastSlashIndex = imageUrl.lastIndexOf("/");
-		String imageName = imageUrl.substring(lastSlashIndex + 1);
-		String imagePath = CommUtils.getImageDir() + imageName;
-		return imagePath;
-	}
+
 }

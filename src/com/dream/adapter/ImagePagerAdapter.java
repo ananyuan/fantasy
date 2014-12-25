@@ -1,5 +1,6 @@
 package com.dream.adapter;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dream.R;
+import com.dream.util.CommUtils;
 import com.dream.util.ImgLoaderOptions;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -23,7 +25,7 @@ import com.ortiz.touch.ExtendedViewPager;
 
 public class ImagePagerAdapter extends PagerAdapter {
 	Context context;
-	ArrayList<String> imgsUrl;
+	ArrayList<String> imgUrlList;
 	LayoutInflater inflater = null;
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	DisplayImageOptions options;
@@ -33,9 +35,9 @@ public class ImagePagerAdapter extends PagerAdapter {
 	ProgressBar progress;
 	TextView retry;
 	
-	public ImagePagerAdapter(Context context, ArrayList<String> imgsUrl) {
+	public ImagePagerAdapter(Context context, ArrayList<String> imgUrlList) {
 		this.context = context;
-		this.imgsUrl = imgsUrl;
+		this.imgUrlList = imgUrlList;
 		inflater = LayoutInflater.from(context);
 		options = ImgLoaderOptions.getListOptions();
 	}
@@ -49,7 +51,7 @@ public class ImagePagerAdapter extends PagerAdapter {
 	
 	@Override
 	public int getCount() {
-		return imgsUrl == null ? 0 : imgsUrl.size();
+		return imgUrlList == null ? 0 : imgUrlList.size();
 	}
 
 	@Override
@@ -71,43 +73,57 @@ public class ImagePagerAdapter extends PagerAdapter {
 		progress= (ProgressBar)view.findViewById(R.id.progress);
 		retry= (TextView)view.findViewById(R.id.retry);//加载失败
 		progress_text.setText(String.valueOf(position));
-		imageLoader.displayImage(imgsUrl.get(position), full_image, options,new ImageLoadingListener() {
-			
-			@Override
-			public void onLoadingStarted(String imageUri, View view) {
-				// TODO Auto-generated method stub
-				progress.setVisibility(View.VISIBLE);
-				progress_text.setVisibility(View.VISIBLE);
-				full_image.setVisibility(View.GONE);
-				retry.setVisibility(View.GONE);
-			}
-			
-			@Override
-			public void onLoadingFailed(String imageUri, View view,
-					FailReason failReason) {
-				// TODO Auto-generated method stub
-				progress.setVisibility(View.GONE);
-				progress_text.setVisibility(View.GONE);
-				full_image.setVisibility(View.GONE);
-				retry.setVisibility(View.VISIBLE);
-			}
-			
-			@Override
-			public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-				progress.setVisibility(View.GONE);
-				progress_text.setVisibility(View.GONE);
-				full_image.setVisibility(View.VISIBLE);
-				retry.setVisibility(View.GONE);
-			}
-			
-			@Override
-			public void onLoadingCancelled(String imageUri, View view) {
-				progress.setVisibility(View.GONE);
-				progress_text.setVisibility(View.GONE);
-				full_image.setVisibility(View.GONE);
-				retry.setVisibility(View.VISIBLE);				
-			}
-		});
+		
+		String imgUrl = imgUrlList.get(position);
+		String imgFilePath = CommUtils.getImagePath(imgUrl);
+		
+		File imageFile = new File(imgFilePath);
+		if (imageFile.exists()) { //目录下有图片文件， 直接显示
+			imageLoader.displayImage("file://" + imageFile, full_image, options);
+			progress.setVisibility(View.GONE);
+			progress_text.setVisibility(View.GONE);
+			full_image.setVisibility(View.VISIBLE);
+			retry.setVisibility(View.GONE);
+		} else {
+			imageLoader.displayImage(imgUrl, full_image, options,new ImageLoadingListener() {
+				
+				@Override
+				public void onLoadingStarted(String imageUri, View view) {
+					// TODO Auto-generated method stub
+					progress.setVisibility(View.VISIBLE);
+					progress_text.setVisibility(View.VISIBLE);
+					full_image.setVisibility(View.GONE);
+					retry.setVisibility(View.GONE);
+				}
+				
+				@Override
+				public void onLoadingFailed(String imageUri, View view,
+						FailReason failReason) {
+					// TODO Auto-generated method stub
+					progress.setVisibility(View.GONE);
+					progress_text.setVisibility(View.GONE);
+					full_image.setVisibility(View.GONE);
+					retry.setVisibility(View.VISIBLE);
+				}
+				
+				@Override
+				public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+					progress.setVisibility(View.GONE);
+					progress_text.setVisibility(View.GONE);
+					full_image.setVisibility(View.VISIBLE);
+					retry.setVisibility(View.GONE);
+				}
+				
+				@Override
+				public void onLoadingCancelled(String imageUri, View view) {
+					progress.setVisibility(View.GONE);
+					progress_text.setVisibility(View.GONE);
+					full_image.setVisibility(View.GONE);
+					retry.setVisibility(View.VISIBLE);				
+				}
+			});
+		}
+		
 		((ViewPager) container).addView(view);
 		return view;
 	}

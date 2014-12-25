@@ -141,6 +141,8 @@ public class DetailsActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String data) {
+			String style = "<style>img { max-width: 100%}</style>";
+			data = style + data;
 			webView.loadDataWithBaseURL(CommUtils.getRequestUri(context), data, "text/html", "utf-8", null);
 		}
 	}

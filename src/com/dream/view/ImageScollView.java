@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Set;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,6 +25,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.dream.ImageShowActivity;
 import com.dream.R;
 import com.dream.db.OrmSqliteDao;
 import com.dream.db.dao.DynamicDao;
@@ -103,12 +107,13 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 	 * 记录所有界面上的图片，用以可以随时控制对图片的释放。
 	 */
 	private List<ImageView> imageViewList = new ArrayList<ImageView>();
+	private ArrayList<String> imageUrlList = new ArrayList<String>();
 
 	/**
 	 * 刷新 ， 将之前的布局及文件都清除，重新获取数据 ， 暂时在发布之后的返回用到
 	 */
 	public void refresh() {
-		
+		imageUrlList.clear();
 		imageViewList.clear();
 		if (null != firstColumn && null != secondColumn) {
 			firstColumn.removeAllViewsInLayout();
@@ -379,6 +384,22 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 		        layout.addView(timeView);
 		        
 				imageViewList.add(imageView);
+				imageUrlList.add(mImageUrl);
+				
+				final int currentSize = imageUrlList.size();
+				imageView.setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						// imageView 添加单击事件
+						Intent intent = new Intent();
+						intent.putStringArrayListExtra("infos", imageUrlList);
+						intent.putExtra("currentItem", currentSize);
+						
+						intent.setClass(mContext, ImageShowActivity.class);
+						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						mContext.startActivity(intent);
+					}
+				});
 			}
 		}
 

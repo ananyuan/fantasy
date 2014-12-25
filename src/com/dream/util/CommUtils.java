@@ -89,6 +89,21 @@ public class CommUtils {
 		return fileDir;
     }
     
+	/**
+	 * 获取图片的本地存储路径。
+	 * 
+	 * @param imageUrl
+	 *            图片的URL地址。
+	 * @return 图片的本地存储路径。
+	 */
+	public static String getImagePath(String imageUrl) {
+		int lastSlashIndex = imageUrl.lastIndexOf("/");
+		String imageName = imageUrl.substring(lastSlashIndex + 1);
+		String imagePath = CommUtils.getImageDir() + imageName;
+		return imagePath;
+	}
+    
+    
     
 	/**
 	 * 判断手机是否有SD卡。

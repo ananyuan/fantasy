@@ -21,6 +21,9 @@ public class ImageShowActivity extends Activity {
 	private ArrayList<String> imgsUrl;
 	/** PagerAdapter */
 	private ImagePagerAdapter mAdapter;
+	
+	private int currentItem = 1;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -32,7 +35,10 @@ public class ImageShowActivity extends Activity {
 
 	private void initData() {
 		imgsUrl = getIntent().getStringArrayListExtra("infos");
-		page_number.setText("1" + "/" + imgsUrl.size());
+		
+		currentItem = getIntent().getIntExtra("currentItem", 1);
+		
+		page_number.setText(currentItem + "/" + imgsUrl.size());
 	}
 
 	private void initView() {
@@ -64,6 +70,8 @@ public class ImageShowActivity extends Activity {
 		if (imgsUrl != null && imgsUrl.size() != 0) {
 			mAdapter = new ImagePagerAdapter(getApplicationContext(), imgsUrl);
 			image_pager.setAdapter(mAdapter);
+			
+			image_pager.setCurrentItem(currentItem - 1);
 		}
 	}
 }

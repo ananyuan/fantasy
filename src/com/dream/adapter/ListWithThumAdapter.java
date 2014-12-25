@@ -97,7 +97,7 @@ public class ListWithThumAdapter extends BaseAdapter {
 				mHolder.item_image_layout.setVisibility(View.GONE);
 				//是否是大图
 				boolean flag = new Random().nextBoolean();
-				if(flag){
+				if(false){
 					mHolder.large_image.setVisibility(View.VISIBLE);
 					mHolder.right_image.setVisibility(View.GONE);
 					imageLoader.displayImage(firstImg, mHolder.large_image, options);
