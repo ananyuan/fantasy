@@ -11,10 +11,11 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.dream.fragment.MailFatherFragment;
 import com.dream.fragment.DynamicFragment;
+import com.dream.fragment.MailFatherFragment;
 import com.dream.fragment.NewsFatherFragment;
 import com.dream.fragment.SettingFragment;
+import com.igexin.sdk.PushManager;
 
 public class MainActivity extends FragmentActivity {
 
@@ -31,6 +32,8 @@ public class MainActivity extends FragmentActivity {
 		
 		findView();
 		init();
+		
+		PushManager.getInstance().initialize(this.getApplicationContext());
 	}
 	
 	private void findView(){

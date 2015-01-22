@@ -3,6 +3,7 @@ package com.dream.app;
 import java.io.File;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.dream.image.FantasyImgFileNameGenerator;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -38,7 +39,7 @@ public class AppApplication extends Application {
 	 * 
 	 */
 	public static void initImageLoader(Context context) {
-		File cacheDir = StorageUtils.getOwnCacheDirectory(context, "dream/Cache");//获取到缓存的目录地址
+		File cacheDir = StorageUtils.getOwnCacheDirectory(context, "fantasy/Cache");//获取到缓存的目录地址
 		Log.d("cacheDir", cacheDir.getPath());
 		//创建配置ImageLoader(所有的选项都是可选的,只使用那些你真的想定制)，这个可以设定在APPLACATION里面，设置为全局的配置参数
 		ImageLoaderConfiguration config = new ImageLoaderConfiguration
@@ -51,7 +52,8 @@ public class AppApplication extends Application {
 				//.memoryCache(new UsingFreqLimitedMemoryCache(2 * 1024 * 1024)) // You can pass your own memory cache implementation你可以通过自己的内存缓存实现
 				//.memoryCacheSize(2 * 1024 * 1024)  
 				///.discCacheSize(50 * 1024 * 1024)  
-				.discCacheFileNameGenerator(new Md5FileNameGenerator())//将保存的时候的URI名称用MD5 加密
+				//.discCacheFileNameGenerator(new Md5FileNameGenerator())//将保存的时候的URI名称用MD5 加密
+				.discCacheFileNameGenerator(new FantasyImgFileNameGenerator(context))//将保存的时候的URI名称用MD5 加密
 				//.discCacheFileNameGenerator(new HashCodeFileNameGenerator())//将保存的时候的URI名称用HASHCODE加密
 				.tasksProcessingOrder(QueueProcessingType.LIFO)
 				//.discCacheFileCount(100) //缓存的File数量

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.dream.db.model.Article;
 import com.dream.db.model.Dynamic;
+import com.dream.db.model.MailBean;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
@@ -31,6 +32,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 	
 	private Dao<Dynamic, Integer> dynamicDao = null;
 	
+	private Dao<MailBean, Integer> mailDao = null;
 	
 	private static final AtomicInteger usageCounter = new AtomicInteger(0);
 
@@ -63,6 +65,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.i(DatabaseHelper.class.getName(), "onCreate");
 			TableUtils.createTableIfNotExists(connectionSource, Article.class); 
 			TableUtils.createTableIfNotExists(connectionSource, Dynamic.class); 
+			TableUtils.createTableIfNotExists(connectionSource, MailBean.class); 
 		} catch (SQLException e) {
 			Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 			throw new RuntimeException(e);
@@ -79,6 +82,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
 			TableUtils.dropTable(connectionSource, Article.class, true);
 			TableUtils.dropTable(connectionSource, Dynamic.class, true);
+			TableUtils.dropTable(connectionSource, MailBean.class, true);
 			// after we drop the old databases, we create the new ones
 			onCreate(db, connectionSource);
 		} catch (SQLException e) {
@@ -103,6 +107,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return dynamicDao;  
     } 
     
+    public Dao<MailBean,Integer> getMailDao() throws SQLException{  
+        if(mailDao == null){  
+        	mailDao = getDao(MailBean.class);  
+        }  
+        return mailDao;  
+    } 
+    
 	/**
 	 * Close the database connections and clear any cached DAOs. For each call to {@link #getHelper(Context)}, there
 	 * should be 1 and only 1 call to this method. If there were 3 calls to {@link #getHelper(Context)} then on the 3rd
@@ -114,6 +125,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 			super.close();
 			articleDao = null;
 			dynamicDao = null;
+			mailDao = null;
 			helper = null;
 		}
 	}

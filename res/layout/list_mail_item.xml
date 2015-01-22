@@ -3,12 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@drawable/newsbg_listpage"
     android:layout_margin="2dp"  >
 
 		<LinearLayout  
-		android:layout_width="match_parent"  
-		android:layout_height="wrap_content"  
-		android:layout_margin="3dp" >      
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="@dimen/list_item_horizontal_padding">      
 				<TextView
 				    android:id="@+id/mail_from"
 				    android:layout_width="wrap_content"
@@ -17,7 +20,8 @@
 				    android:textColor="#333333"
 				    android:layout_alignParentLeft="true"  
 		            android:layout_gravity="left"  
-				    android:textSize="24px" />		
+				    android:textSize="24px"
+				    android:text="路人甲" />		
 				    
 			    <TextView
 			        android:id="@+id/mail_sendTime"
@@ -27,15 +31,24 @@
 			        android:layout_alignParentRight="true"
 			        android:layout_gravity="right"
 		   			android:gravity="center"  
-			        android:textSize="20px" />
+			        android:textSize="20px"
+			        android:text="2015-01-15" />
 		</LinearLayout>
 		
 		<TextView android:id="@+id/mail_subject" 
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content" 
+			android:paddingLeft="@dimen/list_item_horizontal_padding"
+			android:paddingBottom="@dimen/list_item_horizontal_padding"
 			android:textColor="#696969"
-			android:textSize="22px" />
+			android:textSize="22px"
+			android:text="这是来自XX的关于XX的邮件" />
 
-
+        <View
+            android:id="@+id/item_divider"
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dip"
+            android:layout_alignParentBottom="true"
+            android:background="@color/divider_day" />
 		
 </LinearLayout>

@@ -1,31 +1,53 @@
 package com.dream.db.model;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class MailBean {
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
+@DatabaseTable(tableName = "MAIL")
+public class MailBean implements Serializable {
+
+	private static final long serialVersionUID = -7316230428744780522L;
+
+	public MailBean() {
+    }
+	
+	@DatabaseField
 	private String subject = "";
 
+	@DatabaseField
 	private String from = "";
 
+	@DatabaseField
 	private String fromUserName = "";
 
+	@DatabaseField
 	private String sendTime = "";
 
+	@DatabaseField
 	private String to = "";
 
+	@DatabaseField
 	private String receiveTime = "";
 
+	@DatabaseField
 	private String cc = "";
 
+	@DatabaseField
 	private String bcc = "";
 
+	@DatabaseField(id = true)
 	private String messageId = "";
 
+	@DatabaseField
 	private String receiver = "";
 
+	@DatabaseField
 	private boolean isOpen = false;
 
+	@DatabaseField
 	private boolean hasFile = false;
 	
 	private List<MailContent> contents;

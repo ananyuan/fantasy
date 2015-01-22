@@ -48,6 +48,9 @@ public class Article implements Serializable {
     private String imgids;
     
     
+    private String sortnum;
+    
+    
     public String getId() {
 		return id;
 	}
@@ -125,6 +128,16 @@ public class Article implements Serializable {
 
 	public void setImgids(String imgids) {
 		this.imgids = imgids;
+	}
+
+
+	public String getSortnum() {
+		return sortnum;
+	}
+
+
+	public void setSortnum(String sortnum) {
+		this.sortnum = sortnum;
 	}
 
 

@@ -7,6 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,6 +49,8 @@ public class CommUtils {
 	public static final String DATA_FROM_PREFS = "prefs";
 	
 	public static final String LAST_KEY_ARTICLE = "article_last";
+	
+	public static final String LAST_KEY_MAIL = "mail_last";
 	
 	/** perf 中保存的服务器的地址 key */
 	public static final String HOST_KEY = "host_address";
@@ -103,7 +108,31 @@ public class CommUtils {
 		return imagePath;
 	}
     
-    
+	/**
+	 * 
+	 * @param original 原始串
+	 * @return md5串
+	 */
+	public static String getMd5(String original) {
+		StringBuffer sb = new StringBuffer();
+		MessageDigest md;
+		try {
+			md = MessageDigest.getInstance("MD5", "UTF-8");
+
+			md.update(original.getBytes());
+			byte[] digest = md.digest();
+
+			for (byte b : digest) {
+				sb.append(String.format("%02x", b & 0xff));
+			}
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (NoSuchProviderException e) {
+			e.printStackTrace();
+		}
+
+		return sb.toString();
+	}
     
 	/**
 	 * 判断手机是否有SD卡。

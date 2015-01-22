@@ -20,9 +20,14 @@ import android.widget.ListView;
 
 import com.dream.R;
 import com.dream.adapter.MailListAdapter;
+import com.dream.db.OrmSqliteDao;
+import com.dream.db.dao.ArticleDao;
+import com.dream.db.dao.MailDao;
+import com.dream.db.model.Article;
 import com.dream.db.model.MailBean;
 import com.dream.db.model.Page;
 import com.dream.util.CommUtils;
+import com.dream.util.PrefUtils;
 import com.dream.view.TitleBarView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.Mode;
@@ -105,7 +110,7 @@ public class MailFatherFragment extends Fragment {
 		actualListView.setAdapter(listAdapter);
 		
 		//初始化数据 , 从本地查询
-		//new GetMoreDataTask().execute();
+		new GetMoreDataTask().execute();
 		
 		//刷新，从服务器上查询
 		new RefreshDataTask().execute();
@@ -117,43 +122,43 @@ public class MailFatherFragment extends Fragment {
 		mTitleBarView.setTitleText("邮件");
 	}
 	
-//	/**
-//	 * 加载更多
-//	 *
-//	 */
-//	private class GetMoreDataTask extends AsyncTask<Integer, Integer, Integer> {
-//
-//		List<Article> oldList = new ArrayList<Article>();
-//		
-//		@Override
-//		protected Integer doInBackground(Integer... params) {
-//			int result = -1;
-//			
-//			OrmSqliteDao<Article> msgDao = new ArticleDao(mContext);  
-//			page.setOrder("atime");
-//			oldList = msgDao.find(page);
-//			
-//			if (null != oldList && oldList.size() > 0) {
-//				result = 1;
-//			}
-//			return result;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(Integer result) {
-//			if (result > 0) { //取到数据了， 
-//				dataList.addAll(oldList);
-//				
-//				listAdapter.notifyDataSetChanged();
-//			}
-//			// Call onRefreshComplete when the list has been refreshed.
-//			mPullRefreshListView.onRefreshComplete();
-//
-//			page.setPageNo(page.getPageNo() + 1);
-//			
-//			super.onPostExecute(result);
-//		}
-//	}
+	/**
+	 * 加载更多
+	 *
+	 */
+	private class GetMoreDataTask extends AsyncTask<Integer, Integer, Integer> {
+
+		List<MailBean> oldList = new ArrayList<MailBean>();
+		
+		@Override
+		protected Integer doInBackground(Integer... params) {
+			int result = -1;
+			
+			OrmSqliteDao<MailBean> msgDao = new MailDao(mContext);  
+			page.setOrder("receiveTime");
+			oldList = msgDao.find(page);
+			
+			if (null != oldList && oldList.size() > 0) {
+				result = 1;
+			}
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			if (result > 0) { //取到数据了， 
+				dataList.addAll(oldList);
+				
+				listAdapter.notifyDataSetChanged();
+			}
+			// Call onRefreshComplete when the list has been refreshed.
+			mPullRefreshListView.onRefreshComplete();
+
+			page.setPageNo(page.getPageNo() + 1);
+			
+			super.onPostExecute(result);
+		}
+	}
 	
 	/**
 	 * 刷新数据，从服务器上取
@@ -167,10 +172,12 @@ public class MailFatherFragment extends Fragment {
 		protected Integer doInBackground(Integer... params) {
 			int result = -1;
 			
-			String lastTime = "";
+			String lastTime = PrefUtils.getStr(mContext, CommUtils.LAST_KEY_MAIL, "");
 			if (lastTime.length() == 0) {
 				lastTime = "2014-01-01";
 			}
+			
+			OrmSqliteDao<MailBean> msgDao = new MailDao(mContext); 
 			
 			lastTime = lastTime.replace(" ", "%20");
 			
@@ -183,8 +190,15 @@ public class MailFatherFragment extends Fragment {
 				
 				ObjectMapper mapper = new ObjectMapper();
 				MailBean mail = mapper.convertValue(map, MailBean.class);
-
+				
+				msgDao.saveOrUpdate(mail);
+				
 				newList.add(mail);
+				
+				//按时间倒序取的数据，
+				if (i==0) {
+					PrefUtils.saveStr(mContext, CommUtils.LAST_KEY_MAIL, mail.getReceiveTime());
+				}
 			}
 			
 			if (newList.size() > 0) {
