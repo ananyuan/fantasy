@@ -83,7 +83,7 @@ public class ListWithThumAdapter extends BaseAdapter {
 		//获取position对应的数据
 		Article article = getItem(position);
 		mHolder.item_title.setText(article.getTitle());
-		mHolder.item_source.setText("栏目名称");
+		mHolder.item_source.setText(article.getChanname());
 		//mHolder.comment_count.setText("评论" + "news.getCommentNum()");
 		mHolder.publish_time.setText(article.getAtime());
 		String imgUrls = article.getImgids();

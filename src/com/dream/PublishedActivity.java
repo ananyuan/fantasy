@@ -270,6 +270,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 				saveObj.setPosition(local_position.getText().toString());
 				saveObj.setGeopoint("");
 				saveObj.setAtime(CommUtils.getDatetime());
+				saveObj.setItemtype(Constant.DYNAMIC_ITEM_LOCAL);
 				
 				//String fileId = CommUtils.uploadOneImg(saveObj, mContext); 
 				

@@ -7,12 +7,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -23,11 +26,16 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.CoreProtocolPNames;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -56,7 +64,7 @@ public class CommUtils {
 	public static final String HOST_KEY = "host_address";
 	
 	/** perf 中保存的服务器的地址 value */
-	public static final String HOST_KEY_VALUE = "10.198.1.48:8083";
+	public static final String HOST_KEY_VALUE = "182.92.131.36:8083";
 	
 	public static final String FORMAT_DATETIME = "yyyy-MM-dd HH:mm:ss";
 	
@@ -221,6 +229,61 @@ public class CommUtils {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param url
+	 *            请求的地址
+	 * @param dataMap
+	 *            数据
+	 */
+	public static void postToServer(String url, HashMap<String, Object> dataMap) {
+		DefaultHttpClient httpclient = new DefaultHttpClient();
+
+		HttpParams params = httpclient.getParams();
+		HttpConnectionParams.setConnectionTimeout(params, 10000);
+		HttpConnectionParams.setSoTimeout(params, 10000);
+
+		HttpPost httpost = new HttpPost(url);
+
+		try {
+			ObjectMapper mapper = new ObjectMapper();  
+			String  json = mapper.writeValueAsString(dataMap);
+			
+			StringEntity stringEntity = new StringEntity(json, HTTP.UTF_8);
+			stringEntity.setContentType("application/json");
+			
+			httpost.setEntity(stringEntity);
+
+			
+/*			List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+			
+			Iterator<String> iter = dataMap.keySet().iterator();
+	
+			while (iter.hasNext()) {
+				String key = iter.next();
+				nvps.add(new BasicNameValuePair(key, (String) dataMap.get(key)));
+			}
+					
+			UrlEncodedFormEntity urlEncodeEntiry = new UrlEncodedFormEntity(nvps, HTTP.UTF_8);
+			httpost.setEntity(urlEncodeEntiry);
+			urlEncodeEntiry.setContentType("application/json");*/
+			
+			HttpResponse response = httpclient.execute(httpost);
+
+			int responseCode = response.getStatusLine().getStatusCode();
+
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+
+			}
+		} catch (ClientProtocolException e) {
+			Log.e("ClientProtocolException", e.getLocalizedMessage());
+		} catch (UnsupportedEncodingException e) {
+			Log.e("UnsupportedEncodingException", e.getLocalizedMessage());
+		} catch (IOException e) {
+			Log.e("IOException", e.getLocalizedMessage());
+		}
+	}
+	
 	
 	/**
 	 * 
@@ -228,7 +291,7 @@ public class CommUtils {
 	 * @param context 上下文对象
 	 */
 	public static String uploadOneImg(Dynamic saveObj, Context context) {
-		return uploadImage(saveObj.getImgId(), context, saveObj.getId());
+		return uploadImage(getImageDir() + saveObj.getImgId(), context, saveObj.getId());
 	}
 	
 	/**
@@ -256,6 +319,7 @@ public class CommUtils {
 				is.close();
 			} catch (IOException e) {
 				e.printStackTrace();
+				Log.e("uploadImage Exception", e.getLocalizedMessage());
 			}
 		}
 		
@@ -285,13 +349,15 @@ public class CommUtils {
 		
 		HttpPost httppost = new HttpPost(upLoadServerUri);
 		File file = new File(localFilePath);
-
-		MultipartEntity mpEntity = new MultipartEntity(); // 文件传输
+	    
+		MultipartEntity mpEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE); // 文件传输
 		ContentBody cbFile = new FileBody(file);
 		mpEntity.addPart("userfile", cbFile); // <input type="file" name="userfile" /> 对应的
 
 		httppost.setEntity(mpEntity);
 		System.out.println("executing request " + httppost.getRequestLine());
+		
+
 
 		HttpResponse response = httpclient.execute(httppost);
 		HttpEntity resEntity = response.getEntity();

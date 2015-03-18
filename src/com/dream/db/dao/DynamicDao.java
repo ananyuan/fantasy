@@ -1,8 +1,11 @@
 package com.dream.db.dao;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -12,6 +15,7 @@ import com.dream.db.model.Dynamic;
 import com.dream.db.model.Page;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 
 public class DynamicDao implements OrmSqliteDao<Dynamic> {
 	private Dao<Dynamic, Integer> dynamicDao = null;
@@ -117,6 +121,62 @@ public class DynamicDao implements OrmSqliteDao<Dynamic> {
 			
 			query.limit(page.getPageSize());
 			query.offset(page.getPageSize() * page.getPageNo());
+			
+//			Where where = query.where();
+//			 // the name field must be equal to "foo"
+//			 where.eq(Account.NAME_FIELD_NAME, "foo");
+//			 // and
+//			 where.and();
+//			 // the password field must be equal to "_secret"
+//			 where.eq(Account.PASSWORD_FIELD_NAME, "_secret");
+//			
+//			
+//			query.setWhere(where);
+			
+			String order = page.getOrder();
+			if (!TextUtils.isEmpty(order)) {
+				if (page.getSort().equalsIgnoreCase("desc")) {
+					query.orderBy(order, false);	
+				} else {
+					query.orderBy(order, true);
+				}
+			}
+			
+			return dynamicDao.query(query.prepare());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	@Override
+	public List<Dynamic> find(Page page, HashMap<String, Object> queryMap) {
+		try {
+			QueryBuilder<Dynamic, Integer> query = dynamicDao.queryBuilder();
+			
+			query.limit(page.getPageSize());
+			query.offset(page.getPageSize() * page.getPageNo());
+			
+			Where where = query.where();
+			
+			Iterator<String> iter = queryMap.keySet().iterator();
+			int i = 0;
+			
+			while (iter.hasNext()) {
+				String key = iter.next();
+				Object value = queryMap.get(key);
+				
+				if (i > 0) {
+					where.and();
+				}
+				
+				where.eq(key, value);
+				
+				i++;
+			}
+			
+			query.setWhere(where);
 			
 			String order = page.getOrder();
 			if (!TextUtils.isEmpty(order)) {

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -65,9 +66,33 @@ public class DetailsActivity extends Activity {
 		
 		progressBar.setVisibility(View.VISIBLE);
 		
-		mTitleBarView.setCommonTitle(View.GONE, View.VISIBLE, View.GONE, View.GONE);
+		mTitleBarView.setCommonTitle(View.VISIBLE, View.VISIBLE, View.GONE, View.VISIBLE);
 		
-		mTitleBarView.setTitleText(article.getTitle());
+		mTitleBarView.setTitleText(article.getChanname());
+		
+		mTitleBarView.setBtnLeft("返回");
+		mTitleBarView.setBtnLeftOnclickListener(new OnClickListener() {
+			  @Override
+	          public void onClick(View v) {
+				  finish();
+	          }
+		});	
+		
+		
+		mTitleBarView.setBtnRight("分享");
+		mTitleBarView.setBtnRightOnclickListener(new OnClickListener() {
+			  @Override
+	          public void onClick(View v) {
+				  Intent intent=new Intent(Intent.ACTION_SEND);   
+				  intent.setType("text/plain");   
+				  
+				  intent.putExtra(Intent.EXTRA_SUBJECT, article.getTitle());   
+				  intent.putExtra(Intent.EXTRA_TEXT, CommUtils.getRequestUri(context) + article.getLocalurl()); 
+				  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
+				  startActivity(Intent.createChooser(intent, "分享"));  
+	          }
+		});	
+		
 	}
 	
 	
@@ -100,7 +125,6 @@ public class DetailsActivity extends Activity {
 	
 	
 	private class ArticleDetailTask extends AsyncTask<String, String,String>{
-
 		@Override
 		protected String doInBackground(String... id) {
 			String articleid = id[0];
@@ -108,10 +132,15 @@ public class DetailsActivity extends Activity {
 			OrmSqliteDao<Article> msgDao = new ArticleDao(context); 
 			
 			//先查询本地有没有内容了
-			Article article = msgDao.findById(articleid);
+			article = msgDao.findById(articleid);
 			
 			if (!TextUtils.isEmpty(article.getContent())) {
-				return article.getContent();
+				String content = article.getContent();
+				//将html中的本地的图片路径修改
+				
+				//content = content.replaceAll("src=\"/file/", "src=\"/");
+				
+				return content;
 			}
 			
 			//本地没有内容，就去服务端查询
@@ -123,6 +152,13 @@ public class DetailsActivity extends Activity {
 			try {
 				article = mapper.readValue(data, Article.class);
 				
+				String content = article.getContent();
+				//将html中的本地的图片路径修改
+				
+				//content = content.replaceAll("src=\"/file/", "src=\"/");
+				
+				article.setContent(content);
+				
 				msgDao.saveOrUpdate(article);
 			} catch (JsonParseException e) {
 				Log.d(TAG, e.getMessage());
@@ -133,7 +169,7 @@ public class DetailsActivity extends Activity {
 			}
 			
 			if (null != article) {
-				return article.getContent();	
+				return	article.getContent();
 			}
 			
 			return "获取数据出错";
@@ -141,8 +177,23 @@ public class DetailsActivity extends Activity {
 
 		@Override
 		protected void onPostExecute(String data) {
-			String style = "<style>img { max-width: 100%}</style>";
-			data = style + data;
+			String extString = "<style>img { max-width: 100%}</style>";  //设置图片最大100%宽度
+			
+			extString += "<h2>"+article.getTitle()+"</h2>";  //添加标题 
+			
+			String time = article.getAtime();
+			if (time.length() > 16) {
+				time = time.substring(0, 16);
+			}
+			
+			extString += "<p>"+time+"</p>";
+			
+			//时间
+			
+			data = extString + data;
+			
+			//webView.loadDataWithBaseURL("file://" + CommUtils.getImageDir() + "Cache/", data, "text/html", "utf-8", null);
+			
 			webView.loadDataWithBaseURL(CommUtils.getRequestUri(context), data, "text/html", "utf-8", null);
 		}
 	}
@@ -153,11 +204,12 @@ public class DetailsActivity extends Activity {
 		webView.loadUrl("javascript:(function(){"
 				+ "var objs = document.getElementsByTagName(\"img\");"
 				+ "var imgurl=''; " + "for(var i=0;i<objs.length;i++)  " + "{"
-				+ "imgurl+=objs[i].src+',';"
+				+ "imgurl+=objs[i].src+','; objs[i].index = i;"
 				+ "    objs[i].onclick=function()  " + "    {  "
-				+ "        window.imagelistner.openImage(imgurl);  "
-				+ "    }  " + "}" + "})()");
-	}	
+				+ "        window.imagelistner.openImage(imgurl, this.index + 1); "
+				+ "    }  " + "}" 
+				+ "})()");
+	}
 	
 	// js通信接口
 	public class JavascriptInterfaceClass {
@@ -169,7 +221,7 @@ public class DetailsActivity extends Activity {
 		}
 
 		@JavascriptInterface
-		public void openImage(String img) {
+		public void openImage(String img, int pageNum) {
 
 			//
 			String[] imgs = img.split(",");
@@ -180,6 +232,7 @@ public class DetailsActivity extends Activity {
 			}
 			Intent intent = new Intent();
 			intent.putStringArrayListExtra("infos", imgsUrl);
+			intent.putExtra("currentItem", pageNum);
 			intent.setClass(context, ImageShowActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(intent);

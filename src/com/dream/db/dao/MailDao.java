@@ -1,6 +1,7 @@
 package com.dream.db.dao;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -128,6 +129,12 @@ public class MailDao implements OrmSqliteDao<MailBean> {
 		}
 
 		
+		return null;
+	}
+
+	@Override
+	public List<MailBean> find(Page page, HashMap<String, Object> queryMap) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

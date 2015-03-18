@@ -118,4 +118,19 @@ public class Constant {
      * 获取地址信息
      */
     public static final int SILENT_GET_LOCATION = 10;
+    
+    /**
+     * 从服务端下载到的数据 ， 不需要上传到服务端
+     */
+    public static final int DYNAMIC_ITEM_SERVER = 0;
+    
+    /**
+     * 本地数据还未上传
+     */
+    public static final int DYNAMIC_ITEM_LOCAL = 1;
+    
+    /**
+     * 已经上传到服务端， 不需要从服务端获取
+     */
+    public static final int DYNAMIC_ITEM_UPLOADED = 2;
 }

@@ -1,6 +1,7 @@
 package com.dream.db.dao;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -133,6 +134,13 @@ public class ArticleDao implements OrmSqliteDao<Article> {
 		}
 
 		
+		return null;
+	}
+
+
+	@Override
+	public List<Article> find(Page page, HashMap<String, Object> queryMap) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

@@ -50,6 +50,9 @@ public class Article implements Serializable {
     
     private String sortnum;
     
+    @DatabaseField
+    private String channame;
+    
     
     public String getId() {
 		return id;
@@ -138,6 +141,16 @@ public class Article implements Serializable {
 
 	public void setSortnum(String sortnum) {
 		this.sortnum = sortnum;
+	}
+
+
+	public String getChanname() {
+		return channame;
+	}
+
+
+	public void setChanname(String channame) {
+		this.channame = channame;
 	}
 
 

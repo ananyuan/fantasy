@@ -92,7 +92,7 @@ public class ImagePagerAdapter extends PagerAdapter {
 					// TODO Auto-generated method stub
 					progress.setVisibility(View.VISIBLE);
 					progress_text.setVisibility(View.VISIBLE);
-					full_image.setVisibility(View.GONE);
+					//full_image.setVisibility(View.GONE);
 					retry.setVisibility(View.GONE);
 				}
 				

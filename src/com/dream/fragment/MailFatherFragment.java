@@ -185,19 +185,21 @@ public class MailFatherFragment extends Fragment {
 			
 			List<LinkedHashMap<String, Object>> list = CommUtils.getList(requestUrl);
 			
-			for (int i = 0; i < list.size(); i++) {
-				Map<String, Object> map = list.get(i);
-				
-				ObjectMapper mapper = new ObjectMapper();
-				MailBean mail = mapper.convertValue(map, MailBean.class);
-				
-				msgDao.saveOrUpdate(mail);
-				
-				newList.add(mail);
-				
-				//按时间倒序取的数据，
-				if (i==0) {
-					PrefUtils.saveStr(mContext, CommUtils.LAST_KEY_MAIL, mail.getReceiveTime());
+			if (null != list) {
+				for (int i = 0; i < list.size(); i++) {
+					Map<String, Object> map = list.get(i);
+					
+					ObjectMapper mapper = new ObjectMapper();
+					MailBean mail = mapper.convertValue(map, MailBean.class);
+					
+					msgDao.saveOrUpdate(mail);
+					
+					newList.add(mail);
+					
+					//按时间倒序取的数据，
+					if (i==0) {
+						PrefUtils.saveStr(mContext, CommUtils.LAST_KEY_MAIL, mail.getReceiveTime());
+					}
 				}
 			}
 			

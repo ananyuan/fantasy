@@ -36,6 +36,26 @@ public class Dynamic implements Serializable {
     
     @DatabaseField
     private String memo = "";
+    
+    @DatabaseField
+    private int itemtype = 0;
+
+    /**
+     * 记录类型
+     * 0 从服务端下载到的数据 ， 不需要上传到服务端
+     * 1 本地数据还未上传
+     * 2 已经上传到服务端， 不需要从服务端获取
+     * 
+     * @return
+     */
+	public int getItemtype() {
+		return itemtype;
+	}
+
+
+	public void setItemtype(int itemtype) {
+		this.itemtype = itemtype;
+	}
 
 
 	public String getId() {
