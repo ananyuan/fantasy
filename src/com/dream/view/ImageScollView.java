@@ -8,14 +8,12 @@ import java.util.Set;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -240,13 +238,13 @@ public class ImageScollView extends ScrollView implements OnTouchListener {
 		protected void onPostExecute(Integer result) {
 			if (result > 0) { //取到数据了
 				for (Dynamic dynamic: oldList) {
-		        	String fullImageUri = CommUtils.getRequestUri(mContext) + "/file/" + dynamic.getImgId();
+		        	String fullImageUri = CommUtils.getRequestUri(mContext) + "/file/" + dynamic.getImgIds();
 		        	
-		        	dynamic.setImgId(fullImageUri);
+		        	dynamic.setImgIds(fullImageUri);
 		        	
 		        	LoadImageTask task = new LoadImageTask();
 					taskCollection.add(task);
-					task.execute(dynamic.getImgId(), dynamic.getPosition() + "~~" + dynamic.getAtime());
+					task.execute(dynamic.getImgIds(), dynamic.getPosition() + "~~" + dynamic.getAtime());
 				}
 			}
 			page.setPageNo(page.getPageNo() + 1);

@@ -89,7 +89,7 @@ public class PhotoAdapter extends ArrayAdapter<Dynamic> {
 				% mBackgroundColors.size() : position;
 		Log.d(TAG, "getView position:" + position + " h:" + positionHeight);
 		
-		imageLoader.displayImage(dynamicItem.getImgId(), holder.photoImageView, options);
+		imageLoader.displayImage(dynamicItem.getImgIds(), holder.photoImageView, options);
 		
 		holder.address.setText(dynamicItem.getPosition());
 		holder.dtime.setText(dynamicItem.getAtime());

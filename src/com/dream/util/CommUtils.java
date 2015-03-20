@@ -60,6 +60,8 @@ public class CommUtils {
 	
 	public static final String LAST_KEY_MAIL = "mail_last";
 	
+	public static final String LAST_KEY_DYNAMIC = "dynamic_last";
+	
 	/** perf 中保存的服务器的地址 key */
 	public static final String HOST_KEY = "host_address";
 	
@@ -291,7 +293,7 @@ public class CommUtils {
 	 * @param context 上下文对象
 	 */
 	public static String uploadOneImg(Dynamic saveObj, Context context) {
-		return uploadImage(getImageDir() + saveObj.getImgId(), context, saveObj.getId());
+		return uploadImage(getImageDir() + saveObj.getImgIds(), context, saveObj.getId());
 	}
 	
 	/**
@@ -403,4 +405,5 @@ public class CommUtils {
 
 		}
 	}
+	
 }

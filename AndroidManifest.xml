@@ -85,6 +85,11 @@
             android:theme="@android:style/Theme.Light.NoTitleBar"
             android:name=".ShowSelectImageActivity" >
         </activity>
+        <activity  
+		    android:name=".wxapi.WXEntryActivity"
+		    android:exported="true"
+		    android:screenOrientation="portrait" 
+		    android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         
         <service
             android:name="com.baidu.location.f"

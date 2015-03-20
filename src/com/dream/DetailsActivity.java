@@ -12,10 +12,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
@@ -25,18 +27,30 @@ import android.webkit.WebSettings;
 import android.webkit.WebSettings.LayoutAlgorithm;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.dream.db.OrmSqliteDao;
 import com.dream.db.dao.ArticleDao;
 import com.dream.db.model.Article;
 import com.dream.util.CommUtils;
+import com.dream.util.Constant;
+import com.dream.util.ImgLoaderOptions;
 import com.dream.view.TitleBarView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 @SuppressLint("JavascriptInterface")
 public class DetailsActivity extends Activity {
 	
 	private static final String TAG = "DetailsActivity";
+	
+	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	
 	private Context context;
 	
@@ -48,6 +62,10 @@ public class DetailsActivity extends Activity {
 	
 	WebView webView;
 	
+	DisplayImageOptions options;
+	
+	private IWXAPI api;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,6 +74,11 @@ public class DetailsActivity extends Activity {
 		getData();
 		initView();
 		initWebView();
+		
+		api = WXAPIFactory.createWXAPI(this, Constant.APP_ID_WE_CHAT, false);
+		api.registerApp(Constant.APP_ID_WE_CHAT);
+		
+		options = ImgLoaderOptions.getListOptions();
 	}
 
 
@@ -83,18 +106,65 @@ public class DetailsActivity extends Activity {
 		mTitleBarView.setBtnRightOnclickListener(new OnClickListener() {
 			  @Override
 	          public void onClick(View v) {
-				  Intent intent=new Intent(Intent.ACTION_SEND);   
-				  intent.setType("text/plain");   
-				  
-				  intent.putExtra(Intent.EXTRA_SUBJECT, article.getTitle());   
-				  intent.putExtra(Intent.EXTRA_TEXT, CommUtils.getRequestUri(context) + article.getLocalurl()); 
-				  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
-				  startActivity(Intent.createChooser(intent, "分享"));  
+
+	            	PopupMenu popupMenu = new PopupMenu(context, mTitleBarView.findViewById(R.id.title_btn_right));
+	            	
+	            	popupMenu.getMenuInflater().inflate(R.menu.detailshare, popupMenu.getMenu()); 
+	                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() { 
+	                     
+	                    @Override 
+	                    public boolean onMenuItemClick(MenuItem item) { 
+	                    	if (item.getItemId() == R.id.share_wechat_timeline || item.getItemId() == R.id.share_wechat_session) {  // 
+	        					WXWebpageObject webpage = new WXWebpageObject();
+	        					webpage.webpageUrl = CommUtils.getRequestUri(context) + article.getLocalurl();
+	        					WXMediaMessage msg = new WXMediaMessage(webpage);
+	        					msg.title = article.getTitle();
+	        					msg.description = article.getSummary();
+	        					try {
+	        						Bitmap bmp;
+	        						if (article.getImgids().length() > 0) {
+	        							String[] imgArray = article.getImgids().split(",");
+		        						String firstImg = CommUtils.getRequestUri(context)  + "/file/" + imgArray[0];
+		        						
+		        						bmp = imageLoader.loadImageSync(firstImg, options);
+	        						} else { //默认
+	        							bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);	
+	        						}
+	        						
+	        						Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
+	        						bmp.recycle();
+	        						msg.setThumbImage(thumbBmp);
+	        					} catch (Exception e) {
+	        						Log.e(TAG, e.getLocalizedMessage());
+	        					}
+	        					SendMessageToWX.Req req = new SendMessageToWX.Req();
+	        					req.transaction = String.valueOf(System.currentTimeMillis());
+	        					req.message = msg;
+	        					
+	        					if (item.getItemId() == R.id.share_wechat_session) {
+	        						req.scene = SendMessageToWX.Req.WXSceneSession; 	
+	        					} else {
+	        						req.scene = SendMessageToWX.Req.WXSceneTimeline;
+	        					}
+	        					
+	        					api.sendReq(req);
+	                    	} else if (item.getItemId() == R.id.share_common) { //
+		          				  Intent intent=new Intent(Intent.ACTION_SEND);   
+		        				  intent.setType("text/plain");   
+		        				  
+		        				  intent.putExtra(Intent.EXTRA_SUBJECT, article.getTitle());   
+		        				  intent.putExtra(Intent.EXTRA_TEXT, CommUtils.getRequestUri(context) + article.getLocalurl()); 
+		        				  intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);   
+		        				  startActivity(Intent.createChooser(intent, "分享"));  
+	                    	}
+	                        
+	                        return false; 
+	                    } 
+	                }); 
+	                popupMenu.show(); 
 	          }
 		});	
-		
 	}
-	
 	
 	private void initWebView() {
 		webView = (WebView)findViewById(R.id.wb_details);
@@ -280,4 +350,7 @@ public class DetailsActivity extends Activity {
 			super.onProgressChanged(view, newProgress);
 		}
 	}
+
+
+
 }

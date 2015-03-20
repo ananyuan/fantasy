@@ -69,6 +69,7 @@ import com.dream.util.Expressions;
 import com.dream.util.FileUtils;
 import com.dream.util.ImgLoaderOptions;
 import com.dream.util.KeyboardListenEdittext;
+import com.dream.util.PrefUtils;
 import com.dream.util.KeyboardListenEdittext.MOnKeyboardStateChangedListener;
 import com.dream.util.UuidUtils;
 import com.dream.view.WrapGridView;
@@ -266,7 +267,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 			
 			for (String imgPath: imgIdList) {
 				Dynamic saveObj = new Dynamic();
-				saveObj.setImgId(imgPath);
+				saveObj.setImgIds(imgPath);
 				saveObj.setPosition(local_position.getText().toString());
 				saveObj.setGeopoint("");
 				saveObj.setAtime(CommUtils.getDatetime());
@@ -275,13 +276,15 @@ public class PublishedActivity extends Activity implements OnClickListener {
 				//String fileId = CommUtils.uploadOneImg(saveObj, mContext); 
 				
 				String fileId = UuidUtils.base58Uuid();
-				saveObj.setImgId(fileId);
+				saveObj.setImgIds(fileId);
 				saveObj.setId(fileId);
 				
 				//将imgPath的图片 复制 一张 到 fileId对应的目录
 				CommUtils.copyImgFile(imgPath, fileId);
 				
 				msgDao.saveOrUpdate(saveObj);  //保存本地
+				
+				PrefUtils.saveStr(mContext, CommUtils.LAST_KEY_DYNAMIC, saveObj.getAtime());
 			}
 			
 			result = 1;
@@ -507,11 +510,11 @@ public class PublishedActivity extends Activity implements OnClickListener {
 		                //由于指定了目标uri，存储在目标uri，通过目标uri，找到图片    
 						imgIdList.add(path);
 						
-						String newImgId = dynamic.getImgId();
-						if (dynamic.getImgId().length() > 0) {
-							newImgId = dynamic.getImgId() + "," + path;
+						String newImgId = dynamic.getImgIds();
+						if (dynamic.getImgIds().length() > 0) {
+							newImgId = dynamic.getImgIds() + "," + path;
 						}
-						dynamic.setImgId(newImgId);
+						dynamic.setImgIds(newImgId);
 						
 						//将图片显示到grid里面去
 						adapter.notifyDataSetChanged();
@@ -556,7 +559,7 @@ public class PublishedActivity extends Activity implements OnClickListener {
 					
 					imgIdList.addAll(newList);
 					
-					dynamic.setImgId(imgIds);
+					dynamic.setImgIds(imgIds);
 					
 					//将图片显示到grid里面去
 					adapter.notifyDataSetChanged();

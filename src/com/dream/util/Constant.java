@@ -133,4 +133,9 @@ public class Constant {
      * 已经上传到服务端， 不需要从服务端获取
      */
     public static final int DYNAMIC_ITEM_UPLOADED = 2;
+    
+    /**
+     * 微信APPID
+     */
+    public static final String APP_ID_WE_CHAT = "wxf708cd74513a88c8"; 
 }

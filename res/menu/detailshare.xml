@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/share_wechat_timeline"
+        android:icon="@drawable/share_timeline"
+        android:orderInCategory="100"
+        android:title="分享到朋友圈"/>
+    <item
+        android:id="@+id/share_wechat_session"
+        android:icon="@drawable/share_session"
+        android:orderInCategory="100"
+        android:title="分享给个人"/>
+    <item
+        android:id="@+id/share_common"
+        android:icon="@drawable/share_common"
+        android:orderInCategory="100"
+        android:title="通用分享"/>    
+</menu>

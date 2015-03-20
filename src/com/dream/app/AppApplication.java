@@ -2,20 +2,22 @@ package com.dream.app;
 
 import java.io.File;
 
-import com.baidu.mapapi.SDKInitializer;
-import com.dream.image.FantasyImgFileNameGenerator;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.utils.StorageUtils;
 import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.baidu.mapapi.SDKInitializer;
+import com.dream.image.FantasyImgFileNameGenerator;
+import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.utils.StorageUtils;
+
 public class AppApplication extends Application {
 	private static AppApplication mAppApplication;
+	
+	
 	
 	@Override
 	public void onCreate() {
@@ -23,6 +25,9 @@ public class AppApplication extends Application {
 		initImageLoader(getApplicationContext());
 		mAppApplication = this;
 		SDKInitializer.initialize(this);
+		
+		
+		
 	}
 	
 	public static AppApplication getApp() {

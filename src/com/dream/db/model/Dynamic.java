@@ -103,13 +103,13 @@ public class Dynamic implements Serializable {
 	}
 
 
-	public String getImgId() {
+	public String getImgIds() {
 		return imgIds;
 	}
 
 
-	public void setImgId(String imgId) {
-		this.imgIds = imgId;
+	public void setImgIds(String imgIds) {
+		this.imgIds = imgIds;
 	}
     
 	public String getMemo() {
